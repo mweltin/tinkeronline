@@ -1,0 +1,67 @@
+<form #registerForm="ngForm" (ngSubmit)="registerUser()">
+    <div class="form-group first-form-element">
+        <label for="firstName">First Name</label>
+        <input 
+            required 
+            type="text" 
+            class="form-control" 
+            ngModel 
+            name="firstName" 
+            #firstName="ngModel" 
+            id="firstName">
+        <div *ngIf="firstName.touched && firstName.invalid">
+            <div class="alert alert-danger" *ngIf="firstName.errors && firstName.errors.required">Frist name is required
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" class="form-control" required ngModel name="lastName" #lastName="ngModel" id="lastName">
+        <div *ngIf="lastName.touched && lastName.invalid">
+            <div class="alert alert-danger" *ngIf="lastName.errors && lastName.errors.required">Last name is required
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input required ngModel name="email" #email="ngModel" id="email" type="text" class="form-control">
+        <div *ngIf="email.touched && email.invalid">
+            <div class="alert alert-danger" *ngIf="email.errors && email.errors.required">Email is required</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="emailConfirm">Email (confirm)</label>
+        <input required ngModel name="emailConfirm" #emailConfirm="ngModel" id="emailConfirm" type="text"
+            class="form-control">
+        <div *ngIf="emailConfirm.touched">
+            <div class="alert alert-danger" *ngIf="emailConfirm.value != email.value">Email addresses must match</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="userName">User name</label>
+        <input required ngModel name="userName" #userName="ngModel" id="userName" type="text" class="form-control">
+        <div *ngIf="userName.touched && userName.invalid">
+            <div class="alert alert-danger" *ngIf="userName.errors && userName.errors.required">Username is required
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input required ngModel name="password" #password="ngModel" id="password" type="password"
+            class="form-control">
+        <div *ngIf="password.touched && password.invalid">
+            <div class="alert alert-danger" *ngIf="password.errors && password.errors.required">Password is requied
+                required</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="passwordConfirm">Password (confirm)</label>
+        <input required ngModel name="passwordConfirm" #passwordConfirm="ngModel" id="passwordConfirm"
+            type="password" class="form-control">
+        <div *ngIf="passwordConfirm.touched && passwordConfirm.invalid">
+            <div class="alert alert-danger" *ngIf="passwordConfirm.value != password.value">Passwords must match
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-primary" [disabled]="!registerForm.valid">Submit</button>
+</form>
