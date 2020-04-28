@@ -1,9 +1,18 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegisterService {
 
-  constructor() { }
+  private registerEndpoint = 'register.php';
+
+  constructor(
+    private http: HttpClient
+  ) { }
+
+  registerUser(data){
+    return this.http.post(this.registerEndpoint, data);
+  }
 }

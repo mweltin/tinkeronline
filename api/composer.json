@@ -1,0 +1,12 @@
+{
+    "name": "mweltin/api",
+    "authors": [
+        {
+            "name": "mweltin",
+            "email": "mweltinpdx@gmail.com"
+        }
+    ],
+    "require": {
+        "firebase/php-jwt": "^5.2"
+    }
+}

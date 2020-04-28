@@ -8,9 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 exports.__esModule = true;
 var core_1 = require("@angular/core");
 var RegisterComponent = /** @class */ (function () {
-    function RegisterComponent() {
+    function RegisterComponent(registerSrv) {
+        this.registerSrv = registerSrv;
     }
     RegisterComponent.prototype.ngOnInit = function () {
+    };
+    RegisterComponent.prototype.registerUser = function (data) {
+        this.registerSrv.registerUser(data.form.value).subscribe(function (response) { return console.log(response); }, function (error) { return console.log(error); });
     };
     RegisterComponent = __decorate([
         core_1.Component({

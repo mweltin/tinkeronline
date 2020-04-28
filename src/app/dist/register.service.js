@@ -8,8 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 exports.__esModule = true;
 var core_1 = require("@angular/core");
 var RegisterService = /** @class */ (function () {
-    function RegisterService() {
+    function RegisterService(http) {
+        this.http = http;
+        this.registerEndpoint = 'register.php';
     }
+    RegisterService.prototype.registerUser = function (data) {
+        return this.http.post(this.registerEndpoint, data);
+    };
     RegisterService = __decorate([
         core_1.Injectable({
             providedIn: 'root'
