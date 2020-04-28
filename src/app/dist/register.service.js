@@ -10,7 +10,7 @@ var core_1 = require("@angular/core");
 var RegisterService = /** @class */ (function () {
     function RegisterService(http) {
         this.http = http;
-        this.registerEndpoint = 'register.php';
+        this.registerEndpoint = 'api/register.php';
     }
     RegisterService.prototype.registerUser = function (data) {
         return this.http.post(this.registerEndpoint, data);

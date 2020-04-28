@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class RegisterService {
 
-  private registerEndpoint = 'register.php';
+  private registerEndpoint = 'api/register.php';
 
   constructor(
     private http: HttpClient
