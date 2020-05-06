@@ -1,10 +1,6 @@
 <?php
 // composer auto loader
-require __DIR__ . '/vendor/autoload.php';
-// establish a mysql connection and assigns it to variable $pdo
-require('mysql_connect.php');
-// library to create JW tokens to be issued after a successful registration
-use \Firebase\JWT\JWT;
+require 'header.php';
 
 // grab the user input from the registration.
 // @todo - validate and sanitaize inputs 
@@ -16,9 +12,8 @@ $stmt = $pdo->prepare("SELECT * FROM account WHERE username=?");
 $stmt->execute([ $input['userName'] ]); 
 $result = $stmt->fetchAll();
 if( sizeof($result) > 0 ){
-    header('HTTP/1.1 410 User already exists');
-    header('Content-type: application/json');
-    print (  json_encode(['messsage' => 'user already exsits']) );
+    header( 'message: User already exists');
+    http_response_code (421);
     exit();
 }
 
@@ -29,8 +24,6 @@ if( sizeof($result) > 0 ){
 // 4) link registrar, jwt to the new account
    
 try {
-
-    $pdo->beginTransaction();
     // create account 
     $account_query = <<<'SQL'
     INSERT INTO account 
@@ -54,40 +47,31 @@ SQL;
     $stmt = $pdo->prepare( $registrar_query );
     $stmt->execute([ $account_id ]); 
     $registrar_id = $pdo->lastInsertId();
-
-
-
-    $add_token = <<<'SQL'
-    INSERT INTO token (token)
-    VALUES (?)
-SQL;
-
-    $stmt = $pdo->prepare( $add_token );
-    $stmt->execute([ $jwt ]); 
-    $token_id = $pdo->lastInsertId();
-
+    try{
+        $tm = new tokenManager();
+        $jwt = $tm->issueTokenToUser($account_id, $pdo); 
+    } catch(Exception $e){
+        throw $e;
+    }
+    
     // Join JWT, account and registrar 
     $assocate_account_and_login_user = <<<'SQL'
     UPDATE account 
     SET 
-    registrar_id = ?, 
-    token_id = ?
+    registrar_id = ?
     WHERE 
     account_id = ?
 SQL;
 
     $stmt = $pdo->prepare( $assocate_account_and_login_user );
-    $stmt->execute([ $registrar_id, $token_id, $account_id ]); 
+    $stmt->execute([ $registrar_id, $account_id ]); 
 
 } catch(Exception $e) {
-    $pdo->rollBack();
-    header('HTTP/1.1 411 User creation error');
-    header('Content-type: application/json');
-    print (  json_encode(['messsage' => 'there was an error creating your user. please try again.']) );
+    print (  json_encode($e) );
+   //  header( 'message: ' . $e->getMessage() );
+   // http_response_code (444);
     exit();
 }
-
-$pdo->commit();
 
 $response = [
     'message' => 'new account created',

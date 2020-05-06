@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+  errorMsg: string = null;
 
   constructor(
     private registerSrv: RegisterService,
@@ -24,7 +25,10 @@ export class RegisterComponent implements OnInit {
         console.log(response);
         this.router.navigate(['/add-account']);
       },
-      (error) => console.log(error)
+        (error) => {
+           console.log(error);
+           this.errorMsg = error.headers.get('message');
+        }
     );
   }
 }

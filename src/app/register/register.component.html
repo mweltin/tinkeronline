@@ -38,10 +38,14 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="userName">User name</label>
+        <label for="userName">Username</label>
         <input required ngModel name="userName" #userName="ngModel" id="userName" type="text" class="form-control">
+        <div class="alert alert-danger" *ngIf="errorMsg">
+            Username already exists, please select a new username.
+        </div>
         <div *ngIf="userName.touched && userName.invalid">
-            <div class="alert alert-danger" *ngIf="userName.errors && userName.errors.required">Username is required
+            <div class="alert alert-danger" *ngIf="userName.errors && userName.errors.required">
+                Username is required
             </div>
         </div>
     </div>

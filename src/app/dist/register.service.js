@@ -12,12 +12,16 @@ var RegisterService = /** @class */ (function () {
         this.http = http;
         this.registerEndpoint = 'api/register.php';
         this.addUserEndpoint = 'api/addUser.php';
+        this.loginEndpoint = 'api/login.php';
     }
     RegisterService.prototype.registerUser = function (data) {
         return this.http.post(this.registerEndpoint, data);
     };
     RegisterService.prototype.addUseUser = function (data) {
         return this.http.post(this.addUserEndpoint, data);
+    };
+    RegisterService.prototype.login = function (data) {
+        return this.http.post(this.loginEndpoint, data);
     };
     RegisterService = __decorate([
         core_1.Injectable({

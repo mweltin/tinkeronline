@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { RegisterService } from '../register.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -7,12 +9,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  errorMsg: string = null;
+
+  constructor(
+    private registerSrv: RegisterService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
   }
 
-  login(loginForm): void{
-
+  login(data: any): void{
+    this.registerSrv.login(data.form.value).subscribe(
+      (response) => {
+        console.log(response);
+        this.errorMsg = null;
+        this.router.navigate(['/chapter']);
+      },
+      (error) => {
+        console.log(error);
+        this.errorMsg = error.headers.get('message');
+      }
+    );
   }
 }

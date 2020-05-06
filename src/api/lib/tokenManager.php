@@ -1,14 +1,20 @@
 <?php
 // library to create JW tokens to be issued after a successful registration
 use \Firebase\JWT\JWT;
-
-namespace tokenManager;
-
-require('../header.php');
+require('setting.php');
 
 class tokenManager {
 
-    function issueToken($account_id){
+    private $key;
+
+    function __construct() {
+        include('setting.php');
+        $key = $_JWT_KEY;
+        error_log("key" . $key, 3, '../error_log' );
+        
+    }
+    
+    function issueTokenToUser($account_id, $pdo){
         // create JWT token 
         $payload = array(
             "iss" => "https://tinkercamp.org",
@@ -17,7 +23,25 @@ class tokenManager {
             "acct" => $account_id
         );
 
-        return $jwt = JWT::encode($payload, $_JWT_KEY);
+        $jwt = JWT::encode($payload, constant('JWT_KEY'));
+
+        $add_token = <<<'SQL'
+            INSERT INTO token (token)
+            VALUES (?)
+SQL;
+        $stmt = $pdo->prepare( $add_token );
+        $stmt->execute([ $jwt ]); 
+        $token_id = $pdo->lastInsertId();
+
+        $assign_token_to_user = <<< 'SQL'
+            UPDATE account 
+                SET token_id = ? 
+            WHERE
+                account_id = ? 
+SQL;
+        $stmt->execute([ $assign_token_to_user ]); 
+
+        return $jwt;
     }
 
     /**

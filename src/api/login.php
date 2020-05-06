@@ -1,10 +1,5 @@
 <?php
-// composer auto loader
-require __DIR__ . '/vendor/autoload.php';
-// establish a mysql connection and assigns it to variable $pdo
-require('mysql_connect.php');
-// library to create JW tokens to be issued after a successful registration
-use \Firebase\JWT\JWT;
+require 'header.php';
 
 // grab the user input from the login from submission.
 // @todo - validate and sanitaize inputs 
@@ -12,40 +7,30 @@ $input = json_decode($HTTP_RAW_POST_DATA, true);
 
 // check submitted passwd against stored password
 $pwdHash = hash($_PASSWD_HASH_ALGO, $input['password']);
-$stmt = $pdo->prepare("SELECT password, id FROM account WHERE username=?");
+$stmt = $pdo->prepare("SELECT password, account_id FROM account WHERE username=?");
 $stmt->execute([ $input['userName'] ]); 
 $result = $stmt->fetchAll();
 $dbPasswdHash = hash($_PASSWD_HASH_ALGO, $result[0]['password']);
+
 if($dbPasswdHash === $pwdHash){
-    $payload = array(
-        "iss" => "https://tinkercamp.org",
-        "iat" => time(),
-        "exp" => time() + (2 * 60 * 60),
-        "acct" => $result[0]['account_id']
-    );
-
-    $jwt = JWT::encode($payload, $_JWT_KEY);
-
-    $add_token = <<<'SQL'
-    INSERT INTO token (token)
-    VALUES (?)
-    SQL;
-    $stmt = $pdo->prepare( $add_token );
-    $stmt->execute([ $jwt ]); 
-    $token_id = $pdo->lastInsertId();
     
+    $tm = new tokenManager();
+    $jwt = $tm->issueTokenToUser($result[0]['account_id']); 
+   
     $response = [
         'message' => 'Welcome',
-        'token' => $jwt
+        'token' => $jwt,
+        'passwd' => $dbPasswdHash,
+        'pwd' > $pwdHash
     ];
     
     header('Authorzie: ' . $jwt);
     header('Content-type: application/json');
     print (  json_encode($response) );
 } else {
-    header('HTTP/1.1 421 invalid login');
-    header('Content-type: application/json');
-    print (  json_encode(['messsage' => 'User name or password were incorrect']) );
+    // picked up in angular as error.headers.get('message')
+    header( 'message: ' . $result[0]['password']. '  ' . $input['password']);
+    http_response_code (401);
 }
 
 exit();

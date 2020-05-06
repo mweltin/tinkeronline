@@ -11,6 +11,7 @@ var RegisterComponent = /** @class */ (function () {
     function RegisterComponent(registerSrv, router) {
         this.registerSrv = registerSrv;
         this.router = router;
+        this.errorMsg = null;
     }
     RegisterComponent.prototype.ngOnInit = function () {
     };
@@ -19,7 +20,10 @@ var RegisterComponent = /** @class */ (function () {
         this.registerSrv.registerUser(data.form.value).subscribe(function (response) {
             console.log(response);
             _this.router.navigate(['/add-account']);
-        }, function (error) { return console.log(error); });
+        }, function (error) {
+            console.log(error);
+            _this.errorMsg = error.headers.get('message');
+        });
     };
     RegisterComponent = __decorate([
         core_1.Component({

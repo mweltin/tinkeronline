@@ -1,6 +1,6 @@
 <form #loginForm="ngForm" (ngSubmit)="login(loginForm)">
     <div class="form-group">
-        <label for="userName">User name</label>
+        <label for="userName">Username</label>
         <input required ngModel name="userName" #userName="ngModel" id="userName" type="text" class="form-control">
         <div *ngIf="userName.touched && userName.invalid">
             <div class="alert alert-danger" *ngIf="userName.errors && userName.errors.required">
@@ -19,6 +19,7 @@
         </div>
     </div>
     <button class="btn btn-primary" [disabled]="!loginForm.valid">Submit</button>
+    <div *ngIf="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
 </form>
 <div> 
     Not registered? Click <a routerLink="/register" >here</a> to register.
