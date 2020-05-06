@@ -2,13 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { RegisterService } from '../register.service';
 import { Router } from '@angular/router';
 
-
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  selector: 'app-add-account',
+  templateUrl: './add-account.component.html',
+  styleUrls: ['./add-account.component.css']
 })
-export class RegisterComponent implements OnInit {
+export class AddAccountComponent implements OnInit {
 
   constructor(
     private registerSrv: RegisterService,
@@ -18,11 +17,10 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  registerUser(data){
-    this.registerSrv.registerUser(data.form.value).subscribe(
+  addUser(data: any){
+    this.registerSrv.addUseUser(data.form.value).subscribe(
       (response) => {
         console.log(response);
-        this.router.navigate(['/add-account']);
       },
       (error) => console.log(error)
     );

@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 export class RegisterService {
 
   private registerEndpoint = 'api/register.php';
+  private addUserEndpoint = 'api/addUser.php';
 
   constructor(
     private http: HttpClient
@@ -14,5 +15,9 @@ export class RegisterService {
 
   registerUser(data){
     return this.http.post(this.registerEndpoint, data);
+  }
+
+  addUseUser(data){
+    return this.http.post(this.addUserEndpoint, data);
   }
 }

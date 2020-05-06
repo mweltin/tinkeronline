@@ -11,9 +11,13 @@ var RegisterService = /** @class */ (function () {
     function RegisterService(http) {
         this.http = http;
         this.registerEndpoint = 'api/register.php';
+        this.addUserEndpoint = 'api/addUser.php';
     }
     RegisterService.prototype.registerUser = function (data) {
         return this.http.post(this.registerEndpoint, data);
+    };
+    RegisterService.prototype.addUseUser = function (data) {
+        return this.http.post(this.addUserEndpoint, data);
     };
     RegisterService = __decorate([
         core_1.Injectable({

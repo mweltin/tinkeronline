@@ -3,8 +3,7 @@
 require __DIR__ . '/vendor/autoload.php';
 // establish a mysql connection and assigns it to variable $pdo
 require('mysql_connect.php');
-// library to create JW tokens to be issued after a successful registration
-use \Firebase\JWT\JWT;
+
 
 // grab the user input from the login from submission.
 // @todo - validate and sanitaize inputs 

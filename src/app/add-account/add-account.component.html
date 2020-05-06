@@ -1,0 +1,30 @@
+<form #addUserForm="ngForm" (ngSubmit)="addUser(addUserForm)">
+<div class="form-group">
+    <label for="userName">User name</label>
+    <input required ngModel name="userName" #userName="ngModel" id="userName" type="text" class="form-control">
+    <div *ngIf="userName.touched && userName.invalid">
+        <div class="alert alert-danger" *ngIf="userName.errors && userName.errors.required">Username is required
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label for="password">Password</label>
+    <input required ngModel name="password" #password="ngModel" id="password" type="password"
+        class="form-control">
+    <div *ngIf="password.touched && password.invalid">
+        <div class="alert alert-danger" *ngIf="password.errors && password.errors.required">Password is requied
+            required</div>
+    </div>
+</div>
+<div class="form-group">
+    <label for="passwordConfirm">Password (confirm)</label>
+    <input required ngModel name="passwordConfirm" #passwordConfirm="ngModel" id="passwordConfirm"
+        type="password" class="form-control">
+    <div *ngIf="passwordConfirm.touched">
+        <div class="alert alert-danger" *ngIf="passwordConfirm.value != password.value">Passwords must match
+        </div>
+    </div>
+</div>
+<button class="btn btn-primary" [disabled]="!registerForm.valid">Add Account</button>
+</form>
+<button class="btn btn-success" routerLink="/chapter">checkout chapter</button>
