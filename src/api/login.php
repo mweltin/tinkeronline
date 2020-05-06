@@ -6,15 +6,15 @@ require 'header.php';
 $input = json_decode($HTTP_RAW_POST_DATA, true);
 
 // check submitted passwd against stored password
-$pwdHash = hash($_PASSWD_HASH_ALGO, $input['password']);
-$stmt = $pdo->prepare("SELECT password, account_id FROM account WHERE username=?");
+$pwdHash = hash(constant('PASSWD_HASH_ALGO'), $input['password']);
+$stmt = $pdo->prepare("SELECT passwd, account_id FROM account WHERE username=?");
 $stmt->execute([ $input['userName'] ]); 
 $result = $stmt->fetchAll();
-$dbPasswdHash = hash($_PASSWD_HASH_ALGO, $result[0]['password']);
+$dbPasswdHash = $result[0]['passwd'];
 
 if($dbPasswdHash === $pwdHash){
     
-    $tm = new tokenManager();
+    $tm = new tokenManager($pdo, constant('JWT_KEY'));
     $jwt = $tm->issueTokenToUser($result[0]['account_id']); 
    
     $response = [
@@ -29,7 +29,7 @@ if($dbPasswdHash === $pwdHash){
     print (  json_encode($response) );
 } else {
     // picked up in angular as error.headers.get('message')
-    header( 'message: ' . $result[0]['password']. '  ' . $input['password']);
+    header( 'message: Incorrect username or password');
     http_response_code (401);
 }
 

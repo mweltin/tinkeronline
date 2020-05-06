@@ -1,5 +1,4 @@
 <?php
-require('../../../setting.php');
 
 $host = $_HOSTNAME;
 $db   = $_DATABASE;

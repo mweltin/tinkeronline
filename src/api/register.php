@@ -27,13 +27,13 @@ try {
     // create account 
     $account_query = <<<'SQL'
     INSERT INTO account 
-    ( username, password, email )
+    ( username, passwd, email )
     VALUES
     ( ?, ? ,? )
 SQL;
 
     $stmt = $pdo->prepare( $account_query );
-    $stmt->execute([ $input['userName'], hash($_PASSWD_HASH_ALGO, $input['password']), $input['email'] ]); 
+    $stmt->execute([ $input['userName'], hash(constant('PASSWD_HASH_ALGO'), $input['password']), $input['email'] ]); 
     $account_id = $pdo->lastInsertId();
  
     // record registration information
@@ -47,9 +47,10 @@ SQL;
     $stmt = $pdo->prepare( $registrar_query );
     $stmt->execute([ $account_id ]); 
     $registrar_id = $pdo->lastInsertId();
+
     try{
-        $tm = new tokenManager();
-        $jwt = $tm->issueTokenToUser($account_id, $pdo); 
+        $tm = new tokenManager($pdo, constant('JWT_KEY'));
+        $jwt = $tm->issueTokenToUser($account_id); 
     } catch(Exception $e){
         throw $e;
     }
@@ -67,17 +68,13 @@ SQL;
     $stmt->execute([ $registrar_id, $account_id ]); 
 
 } catch(Exception $e) {
-    print (  json_encode($e) );
-   //  header( 'message: ' . $e->getMessage() );
-   // http_response_code (444);
+    header( 'message: ' . json_encode($e) );
+    http_response_code (444);
     exit();
 }
 
 $response = [
-    'message' => 'new account created',
-    'account_id' => $account_id,
-    'registrar_id' => $registrar_id,
-    'token' => $jwt
+    'message' => 'new account created'
 ];
 
 header('Authorzie: ' . $jwt);

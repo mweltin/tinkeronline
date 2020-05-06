@@ -1,20 +1,18 @@
 <?php
 // library to create JW tokens to be issued after a successful registration
 use \Firebase\JWT\JWT;
-require('setting.php');
 
 class tokenManager {
 
-    private $key;
+    private $jwt_key;
+    private $pdo; 
 
-    function __construct() {
-        include('setting.php');
-        $key = $_JWT_KEY;
-        error_log("key" . $key, 3, '../error_log' );
-        
+    function __construct($dbconn, $key) {
+        $this->pdo = $dbconn;
+        $this->jtw_key = $key;
     }
     
-    function issueTokenToUser($account_id, $pdo){
+    function issueTokenToUser($account_id){
         // create JWT token 
         $payload = array(
             "iss" => "https://tinkercamp.org",
@@ -23,15 +21,15 @@ class tokenManager {
             "acct" => $account_id
         );
 
-        $jwt = JWT::encode($payload, constant('JWT_KEY'));
+        $jwt = JWT::encode($payload, $this->jtw_key);
 
         $add_token = <<<'SQL'
             INSERT INTO token (token)
             VALUES (?)
 SQL;
-        $stmt = $pdo->prepare( $add_token );
+        $stmt = $this->pdo->prepare( $add_token );
         $stmt->execute([ $jwt ]); 
-        $token_id = $pdo->lastInsertId();
+        $token_id = $this->pdo->lastInsertId();
 
         $assign_token_to_user = <<< 'SQL'
             UPDATE account 
@@ -52,9 +50,7 @@ SQL;
     function verifyToken( $token ){
         $verified = false; 
         
-        $decoded = JWT::decode($jwt, $key, array('HS256'));
-
-
+        $decoded = JWT::decode($jwt, $this->jtw_key, array('HS256'));
     }
 
     function authorizeAction ($token ){
