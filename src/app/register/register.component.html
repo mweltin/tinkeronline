@@ -1,13 +1,13 @@
-<form #registerForm="ngForm" (ngSubmit)="registerUser(registerForm)">
+<form #registerForm="ngForm" (ngSubmit)="registerUser(registerForm)" appMatchingPassword>
     <div class="form-group first-form-element">
         <label for="firstName">First Name</label>
-        <input 
-            required 
-            type="text" 
-            class="form-control" 
-            ngModel 
-            name="firstName" 
-            #firstName="ngModel" 
+        <input
+            required
+            type="text"
+            class="form-control"
+            ngModel
+            name="firstName"
+            #firstName="ngModel"
             id="firstName">
         <div *ngIf="firstName.touched && firstName.invalid">
             <div class="alert alert-danger" *ngIf="firstName.errors && firstName.errors.required">Frist name is required
@@ -40,9 +40,6 @@
     <div class="form-group">
         <label for="userName">Username</label>
         <input required ngModel name="userName" #userName="ngModel" id="userName" type="text" class="form-control">
-        <div class="alert alert-danger" *ngIf="errorMsg">
-            Username already exists, please select a new username.
-        </div>
         <div *ngIf="userName.touched && userName.invalid">
             <div class="alert alert-danger" *ngIf="userName.errors && userName.errors.required">
                 Username is required
@@ -68,4 +65,7 @@
         </div>
     </div>
     <button class="btn btn-primary" [disabled]="!registerForm.valid">Submit</button>
+    <div class="alert alert-danger" *ngIf="errorMsg">
+      {{ errorMsg }}
+  </div>
 </form>

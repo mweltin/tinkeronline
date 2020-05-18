@@ -1,12 +1,12 @@
 <?php
 /**
  * Simple class used to sanitize user inputs and form validation.
- * There is no internal state so we use a singleton to save memory 
+ * There is no internal state so we use a singleton to save memory
  * and provide a namespace for these functions.
- */ 
-class sanitize extends Singleton {
-    
-    protected function __construct()
+ */
+class sanitize {
+
+    public function __construct()
     {
     }
 
@@ -27,7 +27,7 @@ class sanitize extends Singleton {
         ){
             throw new Exception('One or more required fields are missing');
         } else {
-            // escape string is not neccessary as variables are always 
+            // escape string is not neccessary as variables are always
             // used as part of a paramaterized query.
             $output['firstName'] = strval($userInput['lastName']);
             $output['laatName'] = strval($userInput['lastName']);
@@ -46,8 +46,8 @@ class sanitize extends Singleton {
         }
 
         // simple email validation, we really rely sending an email for account validation
-        if( filter_var($output['email'] , FILTER_VALIDATE_EMAIL) ){
-            throw new Exception('Invlaid email address.');
+        if( filter_var($output['email'] , FILTER_VALIDATE_EMAIL) !=  ){
+            throw new Exception('Invlaid email address.'. $output['email']);
         }
 
         return $output;
