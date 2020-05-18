@@ -48,12 +48,54 @@ SQL;
      * ensure the payloads match and the token hasn't expired.
      */
     function verifyToken( $token ){
-        $verified = false; 
         
-        $decoded = JWT::decode($jwt, $this->jtw_key, array('HS256'));
+        $decoded = JWT::decode($token, $this->jtw_key, array('HS256'));
+
+        $get_token = <<<'SQL'
+        SELECT token FROM account
+        JOIN token ON token.token_id = account.token_id
+        WHERE account_id = (?)
+SQL;
+        $stmt = $this->pdo->prepare( $get_token );
+        $stmt->execute([ $decoded['accnt'] ]);
+        $stored_token = $stmt->fetch();
+        
+        if( $stored_token != $token){
+            throw new \Exception('Token mismatch.');
+        }
+
+        if(time() > $stored_token['exp']){
+            throw new \Exception('Token expired.');
+        }
+
+        // if the return token matches what is stored in the DB 
+        // hasn't expired its a valid token 
+        return true;
     }
+    
 
-    function authorizeAction ($token ){
+    function authorizeAction ( $token, $action ){
+        try{
+            $this->verifyToken($token);
+        } catch(\Exception $e) {
+            return false;
+        }
 
+        $decoded = JWT::decode($token, $this->jtw_key, array('HS256'));
+
+        $getPerm = <<<'SQL'
+        SELECT  count(1) AS has_permission FROM account
+        JOIN account_action ON account.account_id = account_action.account_id
+        JOIN action ON action.action_id = account_action.action_id
+        WHERE  action = (?)
+SQL;
+        $stmt = $this->pdo->prepare( $getPerm );
+        $stmt->execute([ $action ]);
+
+        if($stmt->rowCount() > 0 ){
+            return true;
+        }
+        
+        return false;
     }
 }

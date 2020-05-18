@@ -1,10 +1,17 @@
 <?php
-// composer auto loader
 require 'header.php';
 
+
 // grab the user input from the registration.
-// @todo - validate and sanitaize inputs 
-$input = json_decode($HTTP_RAW_POST_DATA, true);
+try{
+    $sanitize = sanitize::getInstance();
+    $input = $sanitize->registration(json_decode($HTTP_RAW_POST_DATA, true));
+} catch(\Exception $e) {
+    header( 'message: '. $e->getMessage() );
+    http_response_code (422);
+    exit();
+}
+
 
 // test if the desired username already exists.  
 // @todo have the angualr service do this on the fly 
@@ -17,7 +24,7 @@ if( sizeof($result) > 0 ){
     exit();
 }
 
-// registration process (all performed in a DB transaction)
+// registration process 
 // 1) create account
 // 2) enter registration information
 // 3) generate and save JWT
