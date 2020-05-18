@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ChapterComponent } from './chapter/chapter.component';
 import { AddAccountComponent } from './add-account/add-account.component';
+import { MustMatchDirective } from './register/must-match.directive';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { AddAccountComponent } from './add-account/add-account.component';
     LoginComponent,
     RegisterComponent,
     ChapterComponent,
-    AddAccountComponent
+    AddAccountComponent,
+    MustMatchDirective
   ],
   imports: [
     BrowserModule,

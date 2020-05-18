@@ -46,7 +46,7 @@ class sanitize {
         }
 
         // simple email validation, we really rely sending an email for account validation
-        if( filter_var($output['email'] , FILTER_VALIDATE_EMAIL) !=  ){
+        if( filter_var($output['email'] , FILTER_VALIDATE_EMAIL) != $output['email'] ){
             throw new Exception('Invlaid email address.'. $output['email']);
         }
 

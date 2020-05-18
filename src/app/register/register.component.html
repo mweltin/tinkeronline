@@ -1,4 +1,6 @@
-<form #registerForm="ngForm" (ngSubmit)="registerUser(registerForm)" appMatchingPassword>
+<form #registerForm="ngForm" (ngSubmit)="registerUser(registerForm)"
+ [mustMatch]="['password', 'passwordConfirm']"
+ [mustMatch]="['email', 'emailConfirm']">
     <div class="form-group first-form-element">
         <label for="firstName">First Name</label>
         <input
@@ -7,7 +9,7 @@
             class="form-control"
             ngModel
             name="firstName"
-            #firstName="ngModel"
+            #firstName="ngModel"      formGroup.setErrors({ valid: false });
             id="firstName">
         <div *ngIf="firstName.touched && firstName.invalid">
             <div class="alert alert-danger" *ngIf="firstName.errors && firstName.errors.required">Frist name is required
@@ -28,13 +30,10 @@
         <div *ngIf="email.touched && email.invalid">
             <div class="alert alert-danger" *ngIf="email.errors && email.errors.required">Email is required</div>
         </div>
-    </div>
-    <div class="form-group">
-        <label for="emailConfirm">Email (confirm)</label>
-        <input required ngModel name="emailConfirm" #emailConfirm="ngModel" id="emailConfirm" type="text"
+    </div>      formGroup.setErrors({ valid: false }); #emailConfirm="ngModel" id="emailConfirm" type="text"
             class="form-control">
-        <div *ngIf="emailConfirm.touched">
-            <div class="alert alert-danger" *ngIf="emailConfirm.value != email.value">Email addresses must match</div>
+        <div *ngIf="emailConfirm.touched && emailConfirm.errors.mustMatch">
+            Email addresses must match
         </div>
     </div>
     <div class="form-group">
@@ -59,9 +58,8 @@
         <label for="passwordConfirm">Password (confirm)</label>
         <input required ngModel name="passwordConfirm" #passwordConfirm="ngModel" id="passwordConfirm"
             type="password" class="form-control">
-        <div *ngIf="passwordConfirm.touched">
-            <div class="alert alert-danger" *ngIf="passwordConfirm.value != password.value">Passwords must match
-            </div>
+        <div *ngIf="passwordConfirm.touched && passwordConfirm.errors.mustMatch">
+          Passwords must match
         </div>
     </div>
     <button class="btn btn-primary" [disabled]="!registerForm.valid">Submit</button>
