@@ -26,12 +26,10 @@ export class RegisterComponent implements OnInit {
   registerUser(data){
     this.registerSrv.registerUser(data.form.value).subscribe(
       (response: HttpResponse<any> ) => {
-        console.log(response.headers.get('Authorzie'));
         this.tokenSrv.setToken(response.headers.get('Authorzie'));
         this.router.navigate(['/add-account']);
       },
         (error) => {
-           console.log(error);
            this.errorMsg = error.headers.get('message');
         }
     );

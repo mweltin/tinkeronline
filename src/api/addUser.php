@@ -2,17 +2,25 @@
 // composer auto loader
 require 'header.php';
 
-// this action requires a valid token
-$tm = new tokenManager($pdo, constant('JWT_KEY'));
-
-$header = apache_request_headers();
-
-foreach ($header as $headers => $value) {
-    error_log( "$headers: $value <br />\n") ;
-}
+//grab http headers
+$headers = apache_request_headers();
 
 // grab the user input from the registration.
 $input = json_decode($HTTP_RAW_POST_DATA, true);
+$token = $headers['Authorzie'];
+
+// this action requires a valid token
+$tm = new tokenManager($pdo, constant('JWT_KEY'));
+try{
+  $tm-> verifyToken( $token );
+} catch( \Exception $e ) {
+  error_log( $e->getMessage() );
+  header( 'message: Token verification failure. Please login again.' );
+  http_response_code (429);
+  exit();
+}
+
+$tokenData = $tm->parseToken($token);
 
 if( empty($input['userName']) ){
   header( 'Username can not be left empty' );
@@ -40,6 +48,16 @@ if( sizeof($result) > 0 ){
     exit();
 }
 
+$user_info_query = <<<'SQL'
+    select * from account
+    left join token on account.token_id = token.token_id
+    left join registrar on registrar.account_id = account.account_id
+    where account.account_id = ?
+SQL;
+$stmt = $pdo->prepare($user_info_query);
+$stmt->execute([ $tokenData['acct'] ]);
+$registrar = $stmt->fetch();
+
 try {
     // create account
     $account_query = <<<'SQL'
@@ -62,7 +80,7 @@ SQL;
 SQL;
 
     $stmt = $pdo->prepare( $assocate_account_and_login_user );
-    $stmt->execute([ $registrar_id, $account_id ]);
+    $stmt->execute([ $registrar['registrar_id'], $account_id ]);
 
 } catch(Exception $e) {
     print (  json_encode($e) );
@@ -77,6 +95,7 @@ $response = [
 
 // issue new JWT
 
+$jwt = $tm->issueTokenToUser($registrar['account_id']);
 header('Authorzie: ' . $jwt);
 header('Content-type: application/json');
 print (  json_encode($response) );

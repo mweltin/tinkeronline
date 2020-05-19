@@ -86,7 +86,8 @@ $response = [
 
 header('Authorzie: ' . $jwt);
 header('Content-type: application/json');
-header('Access-Control-Expose-Headers');
+//will be needed in future when authentication is from a different domain
+// header('Access-Control-Expose-Headers: Authorzie');
 print (  json_encode($response) );
 
 exit();
