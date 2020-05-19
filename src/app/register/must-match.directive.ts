@@ -12,5 +12,5 @@ export class MustMatchDirective implements Validator {
 
   validate(formGroup: FormGroup): ValidationErrors {
     return MustMatch(this.mustMatch[0], this.mustMatch[1])(formGroup);
-  } 
+  }
 }
