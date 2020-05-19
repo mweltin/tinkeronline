@@ -86,6 +86,7 @@ $response = [
 
 header('Authorzie: ' . $jwt);
 header('Content-type: application/json');
+header('Access-Control-Expose-Headers');
 print (  json_encode($response) );
 
 exit();

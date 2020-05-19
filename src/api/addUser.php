@@ -2,14 +2,31 @@
 // composer auto loader
 require 'header.php';
 
+// this action requires a valid token
+$tm = new tokenManager($pdo, constant('JWT_KEY'));
+
+$header = apache_request_headers();
+
+foreach ($header as $headers => $value) {
+    error_log( "$headers: $value <br />\n") ;
+}
+
 // grab the user input from the registration.
 $input = json_decode($HTTP_RAW_POST_DATA, true);
+
+if( empty($input['userName']) ){
+  header( 'Username can not be left empty' );
+  http_response_code (427);
+  exit();
+}
+
 $sanitize = new sanitize();
 try{
-  $sanitize->mustMatch($input['password'], $input['passwordConfirmation']);
+  $sanitize->mustMatch($input['password'], $input['passwordConfirm']);
 } catch( \Exception $e ) {
   header( 'message: '. $e->getMessage() );
   http_response_code (425);
+  exit();
 }
 
 // test if the desired username already exists.
@@ -22,12 +39,6 @@ if( sizeof($result) > 0 ){
     http_response_code (421);
     exit();
 }
-
-// registration process (all performed in a DB transaction)
-// 1) create account
-// 2) enter registration information
-// 3) generate and save JWT
-// 4) link registrar, jwt to the new account
 
 try {
     // create account
@@ -42,7 +53,6 @@ SQL;
     $stmt->execute([ $input['userName'], hash(constant('PASSWD_HASH_ALGO'), $input['password']) ]);
     $account_id = $pdo->lastInsertId();
 
-    // Join JWT, account and registrar
     $assocate_account_and_login_user = <<<'SQL'
     UPDATE account
     SET
@@ -64,6 +74,8 @@ $response = [
     'message' => 'new account created',
     'user' =>  $input['userName']
 ];
+
+// issue new JWT
 
 header('Authorzie: ' . $jwt);
 header('Content-type: application/json');
