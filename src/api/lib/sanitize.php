@@ -37,12 +37,12 @@ class sanitize {
         }
 
         // test confirmation fields match
-        if(
-            $output['email'] != $userInput['emailConfirm']
-            ||
-            $output['password'] != $userInput['passwordConfirm']
-        ) {
-            throw new Exception('One or more required fields are missing.');
+        if( !$this->mustMatch( $output['email'], $userInput['emailConfirm']) ) {
+            throw new Exception('Confirmation email does not match');
+        }
+
+        if( !$this->mustMatch( $output['password'], $userInput['passwordConfirm']) ) {
+          throw new Exception('Confirmation password does not match');
         }
 
         // simple email validation, we really rely sending an email for account validation
@@ -51,5 +51,9 @@ class sanitize {
         }
 
         return $output;
+    }
+
+    function mustMatch($a, $b) {
+      return $a === $b;
     }
 }

@@ -19,10 +19,9 @@ export class AddAccountComponent implements OnInit {
   }
 
   addUser(data: any){
-    this.registerSrv.addUseUser(data.form.value).subscribe(
-      (response) => {
-        console.log('got here');
-        this.addedUser = 'bob';
+    this.registerSrv.addUser(data.form.value).subscribe(
+      (response: any) => {
+        this.addedUser = response.user;
       },
       (error) => console.log(error)
     );

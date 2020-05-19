@@ -18,7 +18,7 @@ export class RegisterService {
     return this.http.post(this.registerEndpoint, data);
   }
 
-  addUseUser(data: any){
+  addUser(data: any){
     return this.http.post(this.addUserEndpoint, data);
   }
 

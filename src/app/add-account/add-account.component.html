@@ -1,5 +1,5 @@
 <div class="alert alert-success" role="alert" *ngIf="addedUser"> New user {{addedUser}} has been added</div>
-<form #addUserForm="ngForm" (ngSubmit)="addUser(addUserForm)">
+<form #addUserForm="ngForm" (ngSubmit)="addUser(addUserForm); addUserForm.reset() " [mustMatch]="['password', 'passwordConfirm']" >
     <div class="form-group">
         <label for="userName">User name</label>
         <input required ngModel name="userName" #userName="ngModel" id="userName" type="text" class="form-control">
@@ -27,9 +27,14 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-12">
-            <button class="btn btn-primary" [disabled]="!addUserForm.valid">Add Account</button>
-            <button class="btn btn-success float-right" routerLink="/chapter">checkout chapter</button>
+        <div class="col-2">
+            <button class="btn btn-primary" [disabled]="!addUserForm.valid">Add</button>
+        </div>
+        <div class="col-2">
+          <button class="btn btn-success" (click)="addUserForm.reset()" type="reset">Clear</button>
+        </div>
+        <div class="col-8">
+            <button class="btn btn-success float-right" routerLink="/chapter">Done</button>
         </div>
     </div>
 </form>

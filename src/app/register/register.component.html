@@ -62,7 +62,7 @@
         </div>
     </div>
     <button class="btn btn-primary" [disabled]="!registerForm.valid">Submit</button>
-    <button class="btn btn-success" (click)="registerForm.reset()" type="reset">Clear</button>
+    <button class="btn btn-success float-right" (click)="registerForm.reset()" type="reset">Clear</button>
     <div class="alert alert-danger" *ngIf="errorMsg">
       {{ errorMsg }}
   </div>
