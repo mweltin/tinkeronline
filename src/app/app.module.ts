@@ -11,7 +11,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ChapterComponent } from './chapter/chapter.component';
 import { AddAccountComponent } from './add-account/add-account.component';
 import { MustMatchDirective } from './register/must-match.directive';
-
+import { EmailMatchDirective } from './register/email-match.directive';
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,7 +19,8 @@ import { MustMatchDirective } from './register/must-match.directive';
     RegisterComponent,
     ChapterComponent,
     AddAccountComponent,
-    MustMatchDirective
+    MustMatchDirective,
+    EmailMatchDirective
   ],
   imports: [
     BrowserModule,

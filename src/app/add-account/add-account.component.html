@@ -1,3 +1,4 @@
+<div class="alert alert-success" role="alert" *ngIf="addedUser"> New user {{addedUser}} has been added</div>
 <form #addUserForm="ngForm" (ngSubmit)="addUser(addUserForm)">
     <div class="form-group">
         <label for="userName">User name</label>

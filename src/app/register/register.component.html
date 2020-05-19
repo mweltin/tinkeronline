@@ -1,6 +1,6 @@
 <form #registerForm="ngForm" (ngSubmit)="registerUser(registerForm)"
- [mustMatch]="['password', 'passwordConfirm']"
- [mustMatch]="['email', 'emailConfirm']">
+[emailMatch]="['email', 'emailConfirm']"
+ [mustMatch]="['password', 'passwordConfirm']" >
     <div class="form-group first-form-element">
         <label for="firstName">First Name</label>
         <input
@@ -32,9 +32,9 @@
         </div>
       </div>
     <div class="form-group">
-      <label for="email">Email (confirm)</label>
+      <label for="emailConfirm">Email (confirm)</label>
       <input required ngModel name="emailConfirm" #emailConfirm="ngModel" id="emailConfirm" type="text" class="form-control">
-      <div *ngIf="emailConfirm.touched && emailConfirm.errors.mustMatch">
+      <div class="alert alert-danger" *ngIf="emailConfirm.touched && emailConfirm.errors && emailConfirm.errors.emailMatch">
           Email addresses must match
       </div>
     </div>
@@ -49,21 +49,20 @@
     </div>
     <div class="form-group">
         <label for="password">Password</label>
-        <input required ngModel name="password" #password="ngModel" id="password" type="password"
-            class="form-control">
-        <div class="alert alert-danger" *ngIf="password.errors && password.errors.required">
-          Password is requied required
-        </div>
+        <input required ngModel name="password" #password="ngModel" id="password" type="password" class="form-control">
+        <div *ngIf="password.touched && password.invalid">
+          <div class="alert alert-danger" *ngIf="password.errors && password.errors.required">Password is required</div>
+      </div>
     </div>
     <div class="form-group">
         <label for="passwordConfirm">Password (confirm)</label>
-        <input required ngModel name="passwordConfirm" #passwordConfirm="ngModel" id="passwordConfirm"
-            type="password" class="form-control">
-        <div *ngIf="passwordConfirm.touched && passwordConfirm.errors.mustMatch">
+        <input required ngModel name="passwordConfirm" #passwordConfirm="ngModel" id="passwordConfirm" type="password" class="form-control">
+        <div class="alert alert-danger" *ngIf="passwordConfirm.touched && passwordConfirm.errors && passwordConfirm.errors.mustMatch">
           Passwords must match
         </div>
     </div>
-    <button class="btn btn-primary" [disabled]="!registerForm.invalid">Submit</button>
+    <button class="btn btn-primary" [disabled]="!registerForm.valid">Submit</button>
+    <button class="btn btn-success" (click)="registerForm.reset()" type="reset">Clear</button>
     <div class="alert alert-danger" *ngIf="errorMsg">
       {{ errorMsg }}
   </div>

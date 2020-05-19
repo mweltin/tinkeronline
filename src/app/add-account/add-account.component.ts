@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./add-account.component.css']
 })
 export class AddAccountComponent implements OnInit {
+  public addedUser: string;
 
   constructor(
     private registerSrv: RegisterService,
@@ -20,7 +21,8 @@ export class AddAccountComponent implements OnInit {
   addUser(data: any){
     this.registerSrv.addUseUser(data.form.value).subscribe(
       (response) => {
-        console.log(response);
+        console.log('got here');
+        this.addedUser = 'bob';
       },
       (error) => console.log(error)
     );
