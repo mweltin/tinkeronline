@@ -43,6 +43,25 @@ SQL;
     $stmt->execute([ $input['userName'], hash(constant('PASSWD_HASH_ALGO'), $input['password']), $input['email'] ]);
     $account_id = $pdo->lastInsertId();
 
+    // give this account full permissions @todo migrate this to a authorization manager class
+    $get_actions_query = <<< 'SQL'
+    SELECT * FROM action;
+SQL;
+    $stmt = $pdo->prepare( $get_actions_query );
+    $stmt->execute([ ]);
+    $actions = $stmt->fetchAll();
+
+    $set_permissions_query = <<<'SQL'
+    INSERT INTO account_action (account_id, action_id)
+    VALUES
+    (?, ?)
+SQL;
+
+    foreach($actions as $action){
+      $stmt = $pdo->prepare( $set_permissions_query );
+      $stmt->execute([$account_id, $action['action_id'] ]);
+    }
+
     // record registration information
     $registrar_query = <<<'SQL'
     INSERT INTO registrar

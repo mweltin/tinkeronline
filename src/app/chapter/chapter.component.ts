@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ChapterService } from '../chapter.service';
 
 @Component({
   selector: 'app-chapter',
@@ -7,9 +8,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChapterComponent implements OnInit {
 
-  constructor() { }
+  public chapter: any = { title:  '', content: ''};
+
+  constructor(
+    private chapterSrv: ChapterService,
+  ) {
+
+  }
 
   ngOnInit(): void {
+
+    this.chapterSrv.getCurrentChapter().subscribe(
+      (res) => {
+        this.chapter.content = 'klsdjfldskfj';
+        this.chapter.title = 'fingers crossed';
+      },
+      (error) => console.log(error)
+    );
   }
 
 }
