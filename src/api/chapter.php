@@ -22,27 +22,26 @@ try{
 
 $tokenData = $tm->parseToken($token);
 
+$am = new authorizeManager($pdo, $tokenData['acct']);
+
+
 // check for permissions to read chapters
 $stmt = $pdo->prepare("SELECT * FROM account_action join action on action.action_id = account_action.action_id WHERE account_id=?");
 $stmt->execute([ $tokenData['acct'] ]);
 $result = $stmt->fetchAll();
 
-if( array_search("view content", array_column($result, 'name')) !== FALSE ){
+if( $am->has_permission('view content') ){
+  $cm = new chapterManager($pdo, $tokenData['acct']);
+  $result = $cm->get_default_chapter();
   $response = [
-    'message' => 'here is some content from the chapter',
-    'view content' =>  'allowed'
+    'chapter' => $result['chapter'],
+    'title' => $result['title']
   ];
 } else {
-  $response = [
-    'message' => $result,
-    'view content' =>  'denied'
-  ];
+  header( 'message: permissioned denied to view content, please login.' );
+  http_response_code (430);
+  exit();
 }
-
-// look for most recent chapter that has been worked on
-// if not chapters have been worked on return the latest chapter
-
-
 
 // issue new JWT
 

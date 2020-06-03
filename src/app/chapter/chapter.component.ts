@@ -19,9 +19,9 @@ export class ChapterComponent implements OnInit {
   ngOnInit(): void {
 
     this.chapterSrv.getCurrentChapter().subscribe(
-      (res) => {
-        this.chapter.content = 'klsdjfldskfj';
-        this.chapter.title = 'fingers crossed';
+      (res: any) => {
+        this.chapter.content = res.body.chapter;
+        this.chapter.title = res.body.title;
       },
       (error) => console.log(error)
     );
