@@ -1,2 +1,26 @@
-<p>{{ chapter.title }}</p>
-{{ chapter.content }}
+<div class="row">
+  <div class="col">{{ chapter.title }}</div>
+</div>
+<div class="row">
+  <div class="col">{{ chapter.content }}</div>
+</div>
+
+<div class="row"  *ngIf="!accpeted">
+  <div class="col">
+    <button class="btn btn-success" (click)="acceptChallenge()">Accept Challenge</button>
+  </div>
+</div>
+
+<div class="row"   *ngIf="accpeted && !solved">
+  <div class="col">
+    <button class="btn btn-success">Upload solutions</button>
+  </div>
+</div>
+
+<div class="row" *ngIf="accpeted && solved">
+  <div class="col">
+    <div class="btn btn-primary">Solved</div>
+  </div>
+</div>
+
+

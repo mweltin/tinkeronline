@@ -7,12 +7,14 @@ import { TokenService } from './token.service';
 })
 export class ChapterService {
 
-  private chapterEndpoint = 'api/chapter.php';
-
   constructor(
     private http: HttpClient,
     private tokenSrv: TokenService
   ) { }
+
+  private chapterEndpoint = 'api/chapter.php';
+  private acceptChallengeEndpoint = 'api/accpetChallenge.php';
+
 
   getCurrentChapter(){
     return this.http.post(this.chapterEndpoint, 'None', {
@@ -22,4 +24,11 @@ export class ChapterService {
     });
   }
 
+  acceptChallenge( chapterId: number) {
+    return this.http.post(this.acceptChallengeEndpoint, {chapterId}, {
+      headers:
+        { Authorzie: this.tokenSrv.getToken() },
+      observe: 'response'
+    });
+  }
 }

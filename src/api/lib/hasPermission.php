@@ -1,6 +1,6 @@
 <?php
 
-class authorizeManager {
+class hasPermission {
 
     private $account_id;
     private $pdo;
@@ -22,7 +22,7 @@ SQL;
         $this->permissions = $stmt->fetchAll();
     }
 
-    function has_permission($action){
+    function to($action){
         $return_value = FALSE;
 
         if( array_search($action, array_column($this->permissions, 'name')) !== FALSE ){
