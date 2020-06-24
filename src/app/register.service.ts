@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from './token.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,12 @@ export class RegisterService {
   private registerEndpoint = 'api/register.php';
   private addUserEndpoint = 'api/addUser.php';
   private loginEndpoint = 'api/login.php';
+
+  public loggedIn = new BehaviorSubject<boolean>(false);
+
+  get isLoggedIn() {
+    return this.loggedIn.asObservable();
+  }
 
   constructor(
     private http: HttpClient,

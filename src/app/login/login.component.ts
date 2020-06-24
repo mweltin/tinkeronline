@@ -28,6 +28,7 @@ export class LoginComponent implements OnInit {
         this.errorMsg = null;
         this.tokenSrv.setToken(response.token);
         this.router.navigate(['/chapter']);
+        this.registerSrv.loggedIn.next(true);
       },
       (error) => {
         console.log(error);

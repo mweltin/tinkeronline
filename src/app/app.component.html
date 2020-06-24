@@ -1,3 +1,4 @@
 <div class="container">
+  <app-settings *ngIf="isLoggedIn$ | async as isLoggedIn"></app-settings>
   <router-outlet></router-outlet>
 </div>
