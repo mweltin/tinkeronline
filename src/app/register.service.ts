@@ -11,6 +11,7 @@ export class RegisterService {
   private registerEndpoint = 'api/register.php';
   private addUserEndpoint = 'api/addUser.php';
   private loginEndpoint = 'api/login.php';
+  private logoutEndpoint = 'api/logout.php';
 
   public loggedIn = new BehaviorSubject<boolean>(false);
 
@@ -51,5 +52,9 @@ withCredentials ?: boolean;
 
   login(data: any){
     return this.http.post(this.loginEndpoint, data);
+  }
+
+  logout(data: any){
+    return this.http.post(this.logoutEndpoint, data);
   }
 }
