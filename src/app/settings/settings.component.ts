@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-settings',
@@ -10,9 +11,11 @@ export class SettingsComponent implements OnInit {
 
   closeResult = '';
 
-  constructor(private modalService: NgbModal) {}
+  constructor(private modalService: NgbModal, private fb: FormBuilder) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    
+  }
 
   open(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
@@ -35,4 +38,5 @@ export class SettingsComponent implements OnInit {
   logout(){
     return true;
   }
+
 }

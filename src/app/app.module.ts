@@ -13,6 +13,7 @@ import { AddAccountComponent } from './add-account/add-account.component';
 import { MustMatchDirective } from './register/must-match.directive';
 import { EmailMatchDirective } from './register/email-match.directive';
 import { SettingsComponent } from './settings/settings.component';
+
 @NgModule({
   declarations: [
     AppComponent,
