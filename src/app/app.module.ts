@@ -13,6 +13,7 @@ import { AddAccountComponent } from './add-account/add-account.component';
 import { MustMatchDirective } from './register/must-match.directive';
 import { EmailMatchDirective } from './register/email-match.directive';
 import { SettingsComponent } from './settings/settings.component';
+import { SettingFormComponent } from './setting-form/setting-form.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { SettingsComponent } from './settings/settings.component';
     AddAccountComponent,
     MustMatchDirective,
     EmailMatchDirective,
-    SettingsComponent
+    SettingsComponent,
+    SettingFormComponent
   ],
   imports: [
     BrowserModule,

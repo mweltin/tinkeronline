@@ -1,0 +1,17 @@
+<form [formGroup]="settingForm" (ngSubmit)="onSubmit()">
+    <label>
+        Username:
+        <input type="text" formControlName="username">
+      </label>
+
+      <label>
+        email:
+        <input type="text" formControlName="email">
+      </label>
+
+      <label>
+        Billing Info:
+        <input type="text" formControlName="billing_info">
+      </label>
+</form>
+

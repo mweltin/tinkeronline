@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder } from '@angular/forms';
+import { TokenService } from '../token.service';
+import { RegisterService } from '../register.service';
 
 @Component({
   selector: 'app-settings',
@@ -10,11 +12,18 @@ import { FormBuilder } from '@angular/forms';
 export class SettingsComponent implements OnInit {
 
   closeResult = '';
+  settings;
+  errorMsg;
 
-  constructor(private modalService: NgbModal, private fb: FormBuilder) {}
+  constructor(
+    private modalService: NgbModal,
+    private tokenSrv: TokenService,
+    private router: Router,
+    private regServ: RegisterService
+    ) {}
 
   ngOnInit(): void {
-    
+
   }
 
   open(content) {
@@ -36,7 +45,9 @@ export class SettingsComponent implements OnInit {
   }
 
   logout(){
-    return true;
+    this.tokenSrv.setToken('');
+    this.regServ.logout();
+    this.router.navigate(['login']);
   }
 
 }

@@ -72,7 +72,10 @@ SQL;
         $child_account_settings[$key]['permissions'] = $child_premission_settings;
       } 
       
-      $response = [ "user_settings" => $account_settings, "child_settings"=>$child_account_settings ];
+      $response["user_settings"]["username"]= $account_settings[0]['username'];
+      $response["user_settings"]["email"]= $account_settings[0]['email'];
+      $response["user_settings"]["billing_info"]= $account_settings[0]['billing_info'];
+      $response["child_settings"] = $child_account_settings;
     break;
 
     case 'POST':

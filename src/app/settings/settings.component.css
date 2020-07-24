@@ -1,3 +1,14 @@
 #top-nav-bar{
   background-color: #4F5A7F;
 }
+
+.btn-tinker {
+  background-color: #4F5A7F;
+  color: white;
+  border: none;
+}
+
+.btn-tinker:hover {
+  background-color: #828DB2;
+  color: white;
+}

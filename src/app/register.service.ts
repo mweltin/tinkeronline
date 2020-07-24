@@ -13,10 +13,23 @@ export class RegisterService {
   private loginEndpoint = 'api/login.php';
   private logoutEndpoint = 'api/logout.php';
 
-  public loggedIn = new BehaviorSubject<boolean>(false);
+  public loggedIn$ = new BehaviorSubject<boolean>(false);
 
   get isLoggedIn() {
-    return this.loggedIn.asObservable();
+    return this.loggedIn$.asObservable();
+  }
+
+  login(data: any){
+    return this.http.post(this.loginEndpoint, data);
+  }
+
+  logout(){
+   this.http.post(this.logoutEndpoint, {}, {
+      headers:
+        { Authorzie: this.tokenSrv.getToken() },
+      observe: 'response'
+    });
+   this.loggedIn$.next(false);
   }
 
   constructor(
@@ -27,15 +40,6 @@ export class RegisterService {
   registerUser(data: any){
     return this.http.post(this.registerEndpoint, data, { observe: 'response'});
   }
-/*
-{ headers ?: HttpHeaders | { [header: string]: string | string[]; };
-observe ?: "body";
-params ?: HttpParams | { [param: string]: string | string[]; };
-reportProgress ?: boolean;
-responseType: "arraybuffer";
-withCredentials ?: boolean;
-}
-*/
 
   addUser(data: any) {
     const httpOptions = {
@@ -50,11 +54,5 @@ withCredentials ?: boolean;
     });
   }
 
-  login(data: any){
-    return this.http.post(this.loginEndpoint, data);
-  }
 
-  logout(data: any){
-    return this.http.post(this.logoutEndpoint, data);
-  }
 }
