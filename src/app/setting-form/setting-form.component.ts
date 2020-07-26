@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { HttpResponse } from '@angular/common/http';
 import { SettingsService } from '../settings.service';
 import { TokenService } from '../token.service';
@@ -27,16 +27,8 @@ export class SettingFormComponent implements OnInit {
     ])
   });
 
-  get children() {
+  get children(){
     return this.settingForm.get('children') as FormArray;
-  }
-
-  createChild(): FormGroup {
-    return this.fb.group({
-      username: '',
-      email: ''
-     // , permissions: this.fb.array([ ])
-    });
   }
 
   ngOnInit(): void {
@@ -47,10 +39,20 @@ export class SettingFormComponent implements OnInit {
         this.settingForm.controls.email.setValue(response.body.user_settings.email);
         this.settingForm.controls.billing_info.setValue(response.body.user_settings.billing_info);
         for (const field of response.body.child_settings ){
-            let tempChild = this.createChild();
-            tempChild.controls.username.setValue(field.username);
-            tempChild.controls.email.setValue(field.email);
-            this.children.push( tempChild );
+            const childGrp = new FormGroup({});
+            const childNameCtrl = new FormControl();
+            childNameCtrl.setValue(field.username);
+            const childEmailCtrl = new FormControl();
+            childEmailCtrl.setValue(field.email);
+            childGrp.addControl('name', childNameCtrl);
+            childGrp.addControl('emal', childNameCtrl);
+            for (const perm of field.permissions){
+              const childPerm = new FormControl();
+              childPerm.setValue(perm.has_permission);
+              childGrp.addControl(perm.name, childPerm);
+
+            }
+            this.children.push(childGrp);
           }
       },
 (error) => {

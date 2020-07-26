@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChapterService } from '../chapter.service';
+import { TokenService } from '../token.service';
 
 @Component({
   selector: 'app-chapter',
@@ -15,6 +16,7 @@ export class ChapterComponent implements OnInit {
 
   constructor(
     private chapterSrv: ChapterService,
+    private tokenSrv: TokenService
   ) {
 
   }
@@ -28,6 +30,8 @@ export class ChapterComponent implements OnInit {
         this.solved = res.body.solved;
         this.accpeted = res.body.accepted;
         this.chapterId = res.body.chapter_id;
+        this.tokenSrv.setToken(res.headers.get('Authorzie'));
+
       },
       (error) => console.log(error)
     );

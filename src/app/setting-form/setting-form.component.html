@@ -20,7 +20,7 @@
     </label>
   </div>
 
-  <div formArrayName="children">
+  <!-- div formArrayName="children">
     <div *ngFor="let kids of children.controls; let i=index">
       Child {{i + 1}}:
       <div [formGroupName]="i">
@@ -36,7 +36,9 @@
             <input type="text" formControlName="email">
           </label>
         </div>
+        <div *ngFor="let perms of kids.permissions.controls; let i=index">
+        </div>
       </div>
     </div>
-  </div>
+  </div -->
 </form>
