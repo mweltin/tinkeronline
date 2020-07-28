@@ -20,14 +20,14 @@
     </label>
   </div>
 
-  <!-- div formArrayName="children">
+  <div formArrayName="children">
     <div *ngFor="let kids of children.controls; let i=index">
       Child {{i + 1}}:
       <div [formGroupName]="i">
         <div class="form-group">
           <label>
             UserName:
-            <input formControlName="username">
+            <input formControlName="name">
           </label>
         </div>
         <div class="form-group">
@@ -36,9 +36,13 @@
             <input type="text" formControlName="email">
           </label>
         </div>
-        <div *ngFor="let perms of kids.permissions.controls; let i=index">
+        <div [formGroup]="kids.controls.perms">
+          <div *ngFor="let perm of permissions;">
+            <label>{{perm}} </label>
+            <input type="checkbox" formControlName="{{perm}}">
+          </div>
         </div>
       </div>
     </div>
-  </div -->
+  </div>
 </form>

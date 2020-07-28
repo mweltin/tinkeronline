@@ -27,9 +27,12 @@ export class SettingFormComponent implements OnInit {
     ])
   });
 
+  permissions = [];
+
   get children(){
     return this.settingForm.get('children') as FormArray;
   }
+
 
   ngOnInit(): void {
     this.settingsSrv.getSettings().subscribe(
@@ -45,15 +48,17 @@ export class SettingFormComponent implements OnInit {
             const childEmailCtrl = new FormControl();
             childEmailCtrl.setValue(field.email);
             childGrp.addControl('name', childNameCtrl);
-            childGrp.addControl('emal', childNameCtrl);
+            childGrp.addControl('email', childEmailCtrl);
+            const childPermGrp = new FormGroup({});
             for (const perm of field.permissions){
               const childPerm = new FormControl();
-              childPerm.setValue(perm.has_permission);
-              childGrp.addControl(perm.name, childPerm);
-
+              childPerm.setValue(Boolean(perm.has_permission == 'true'));
+              childPermGrp.addControl(perm.name, childPerm);
             }
+            childGrp.addControl('perms', childPermGrp);
             this.children.push(childGrp);
           }
+        this.permissions = response.body.child_settings[0].permissions.map( x => x.name);
       },
 (error) => {
            this.errorMsg = error.headers.get('message');
