@@ -79,7 +79,8 @@ SQL;
     break;
 
     case 'POST':
-      $response = ['oh yeah'];
+      $input = json_decode($HTTP_RAW_POST_DATA, true);
+      $response = $input;
     break;
   }
 } else {

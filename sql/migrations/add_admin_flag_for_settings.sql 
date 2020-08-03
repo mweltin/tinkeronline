@@ -1,0 +1,5 @@
+ALTER TABLE action ADD COLUMN parent_only BOOLEAN defaul 0;
+
+UPDATE action set parent_only = 1 where name = 'update settings';
+
+UPDATE action set parent_only = 1 where name = 'approve assets';

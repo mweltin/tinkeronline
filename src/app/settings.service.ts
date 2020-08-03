@@ -21,4 +21,11 @@ export class SettingsService {
       observe: 'response'
     });
   }
+  saveSettings(formData){
+    return this.http.post(this.settingsEndpoint, formData, {
+      headers:
+        { Authorzie: this.tokenSrv.getToken() },
+      observe: 'response'
+    });
+  }
 }

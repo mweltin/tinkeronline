@@ -67,6 +67,8 @@ export class SettingFormComponent implements OnInit {
   }
 
 onSubmit(){
-    return true;
+    this.settingsSrv.saveSettings(this.settingForm).subscribe(
+      (resp) => { console.log(resp) }
+    );
   }
 }
