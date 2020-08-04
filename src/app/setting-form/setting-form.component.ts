@@ -73,8 +73,8 @@ export class SettingFormComponent implements OnInit {
 
 onSubmit(){
     this.settingsSrv.saveSettings(this.settingForm.value).subscribe(
-      (resp) => { 
-        console.log(resp) ;
+      (resp) => {
+        this.tokenSrv.setToken(resp.headers.get('Authorzie'));
         this.modalService.dismissAll();
       }
     );

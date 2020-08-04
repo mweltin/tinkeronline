@@ -117,7 +117,6 @@ SQL;
 
         foreach( $val['perms'] as $name => $has_perm){
           if( $has_perm == 1){
-            error_log($name. " --" . $has_perm);
             $stmt = $pdo->prepare( $add_permissions );
             $stmt->execute([ $val['id'], $name  ]);
           }
