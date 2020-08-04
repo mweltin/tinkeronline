@@ -55,6 +55,7 @@ select a.name,
     end as has_permission
 from action a
 left join account_action aa on aa.action_id  = a.action_id and aa.account_id = ?
+where parent_only = 0
 SQL;
 
       $stmt = $pdo->prepare( $account_settings_query  );
@@ -80,6 +81,48 @@ SQL;
 
     case 'POST':
       $input = json_decode($HTTP_RAW_POST_DATA, true);
+      $update_account =<<<'SQL'
+        update account 
+          set username = ?,
+              email = ?
+        where account_id = ?
+SQL;
+      $update_registar_info =<<<'SQL'
+        update registrar 
+          set billing_info = ?
+        where account_id = ?
+SQL;
+      $remove_permissions =<<<'SQL'
+        delete from account_action where account_id = ? 
+SQL;
+      $add_permissions =<<<'SQL'
+        insert into 
+account_action (action_id, account_id) 
+(select action_id, ? from action where name = ?) 
+SQL;
+
+      $stmt = $pdo->prepare( $update_account );
+      $stmt->execute([ $input['username'], $input['email'], $tokenData['acct'] ]);
+
+      $stmt = $pdo->prepare( $update_registar_info );
+      $stmt->execute([ $input['billing_info'], $tokenData['acct'] ]);
+
+      foreach( $input['children'] as $key => $val ){
+        error_log("**".$key. print_r($val, true));
+        $stmt = $pdo->prepare( $update_account );
+        $stmt->execute([ $val['name'], $val['email'], $val['id'] ]);
+
+        $stmt = $pdo->prepare( $remove_permissions );
+        $stmt->execute([ $val['id'] ]);
+
+        foreach( $val['perms'] as $name => $has_perm){
+          if( $has_perm == 1){
+            error_log($name. " --" . $has_perm);
+            $stmt = $pdo->prepare( $add_permissions );
+            $stmt->execute([ $val['id'], $name  ]);
+          }
+        }
+      }
       $response = $input;
     break;
   }

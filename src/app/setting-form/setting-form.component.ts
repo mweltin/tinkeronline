@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { HttpResponse } from '@angular/common/http';
 import { SettingsService } from '../settings.service';
 import { TokenService } from '../token.service';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-setting-form',
@@ -16,7 +17,8 @@ export class SettingFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private settingsSrv: SettingsService,
-    private tokenSrv: TokenService
+    private tokenSrv: TokenService,
+    private modalService: NgbModal
   ) {}
 
   settingForm = this.fb.group({
@@ -47,8 +49,11 @@ export class SettingFormComponent implements OnInit {
             childNameCtrl.setValue(field.username);
             const childEmailCtrl = new FormControl();
             childEmailCtrl.setValue(field.email);
+            const childIdCtrl = new FormControl();
+            childIdCtrl.setValue(field.account_id);
             childGrp.addControl('name', childNameCtrl);
             childGrp.addControl('email', childEmailCtrl);
+            childGrp.addControl('id', childIdCtrl);
             const childPermGrp = new FormGroup({});
             for (const perm of field.permissions){
               const childPerm = new FormControl();
@@ -67,8 +72,11 @@ export class SettingFormComponent implements OnInit {
   }
 
 onSubmit(){
-    this.settingsSrv.saveSettings(this.settingForm).subscribe(
-      (resp) => { console.log(resp) }
+    this.settingsSrv.saveSettings(this.settingForm.value).subscribe(
+      (resp) => { 
+        console.log(resp) ;
+        this.modalService.dismissAll();
+      }
     );
   }
 }
