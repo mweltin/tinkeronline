@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { HttpResponse } from '@angular/common/http';
 import { SettingsService } from '../settings.service';
 import { TokenService } from '../token.service';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-setting-form',
@@ -35,11 +35,9 @@ export class SettingFormComponent implements OnInit {
     return this.settingForm.get('children') as FormArray;
   }
 
-
   ngOnInit(): void {
     this.settingsSrv.getSettings().subscribe(
       (response: HttpResponse<any> ) => {
-        this.tokenSrv.setToken(response.headers.get('Authorzie'));
         this.settingForm.controls.username.setValue(response.body.user_settings.username);
         this.settingForm.controls.email.setValue(response.body.user_settings.email);
         this.settingForm.controls.billing_info.setValue(response.body.user_settings.billing_info);
@@ -74,7 +72,6 @@ export class SettingFormComponent implements OnInit {
 onSubmit(){
     this.settingsSrv.saveSettings(this.settingForm.value).subscribe(
       (resp) => {
-        this.tokenSrv.setToken(resp.headers.get('Authorzie'));
         this.modalService.dismissAll();
       }
     );

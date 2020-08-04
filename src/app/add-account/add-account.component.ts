@@ -13,9 +13,7 @@ export class AddAccountComponent implements OnInit {
   public addedUser: string;
 
   constructor(
-    private registerSrv: RegisterService,
-    private router: Router,
-    private tokenSrv: TokenService
+    private registerSrv: RegisterService
   ) { }
 
   ngOnInit(): void {
@@ -24,7 +22,6 @@ export class AddAccountComponent implements OnInit {
   addUser(data: any){
     this.registerSrv.addUser(data.form.value).subscribe(
       (response: HttpResponse<any> ) => {
-        this.tokenSrv.setToken(response.headers.get('Authorzie'));
         this.addedUser = response.body.user;
       },
       (error) => console.log(error)

@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class TokenService {
 
-  public token;
+  private token: string;
 
   constructor() { }
 

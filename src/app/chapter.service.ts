@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
-import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +7,7 @@ import { TokenService } from './token.service';
 export class ChapterService {
 
   constructor(
-    private http: HttpClient,
-    private tokenSrv: TokenService
+    private http: HttpClient
   ) { }
 
   private chapterEndpoint = 'api/chapter.php';
@@ -17,18 +15,10 @@ export class ChapterService {
 
 
   getCurrentChapter(){
-    return this.http.post(this.chapterEndpoint, 'None', {
-      headers:
-        { Authorzie: this.tokenSrv.getToken() },
-      observe: 'response'
-    });
+    return this.http.post(this.chapterEndpoint, 'None');
   }
 
   acceptChallenge( chapterId: number) {
-    return this.http.post(this.acceptChallengeEndpoint, {chapterId}, {
-      headers:
-        { Authorzie: this.tokenSrv.getToken() },
-      observe: 'response'
-    });
+    return this.http.post(this.acceptChallengeEndpoint, {chapterId});
   }
 }

@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpResponse, HttpHeaders } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 import { RegisterService } from '../register.service';
 import { Router } from '@angular/router';
-import { TokenService } from '../token.service';
-
-
 
 @Component({
   selector: 'app-register',
@@ -16,8 +13,7 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     private registerSrv: RegisterService,
-    private router: Router,
-    private tokenSrv: TokenService
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -26,7 +22,6 @@ export class RegisterComponent implements OnInit {
   registerUser(data){
     this.registerSrv.registerUser(data.form.value).subscribe(
       (response: HttpResponse<any> ) => {
-        this.tokenSrv.setToken(response.headers.get('Authorzie'));
         this.router.navigate(['/add-account']);
       },
         (error) => {

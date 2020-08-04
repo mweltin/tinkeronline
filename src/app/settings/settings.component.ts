@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { TokenService } from '../token.service';
 import { RegisterService } from '../register.service';
 
 @Component({
@@ -17,8 +15,6 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     private modalService: NgbModal,
-    private tokenSrv: TokenService,
-    private router: Router,
     private regServ: RegisterService
     ) {}
 
@@ -45,9 +41,7 @@ export class SettingsComponent implements OnInit {
   }
 
   logout(){
-    this.tokenSrv.setToken('');
     this.regServ.logout();
-    this.router.navigate(['login']);
   }
 
 }

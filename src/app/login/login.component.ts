@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RegisterService } from '../register.service';
 import { Router } from '@angular/router';
-import { TokenService } from '../token.service';
 
 @Component({
   selector: 'app-login',
@@ -14,8 +13,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private registerSrv: RegisterService,
-    private router: Router,
-    private tokenSrv: TokenService
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -24,11 +22,9 @@ export class LoginComponent implements OnInit {
   login(data: any): void{
     this.registerSrv.login(data.form.value).subscribe(
       (response: any) => {
-        console.log(response);
-        this.errorMsg = null;
-        this.tokenSrv.setToken(response.token);
-        this.router.navigate(['/chapter']);
         this.registerSrv.loggedIn$.next(true);
+        this.errorMsg = null;
+        this.router.navigate(['/chapter']);
       },
       (error) => {
         console.log(error);
