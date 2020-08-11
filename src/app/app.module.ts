@@ -15,6 +15,7 @@ import { EmailMatchDirective } from './register/email-match.directive';
 import { SettingsComponent } from './settings/settings.component';
 import { SettingFormComponent } from './setting-form/setting-form.component';
 import { JwtInterceptor } from './jwt_interceptor';
+import { FileUploadComponent } from './file-upload/file-upload.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { JwtInterceptor } from './jwt_interceptor';
     MustMatchDirective,
     EmailMatchDirective,
     SettingsComponent,
-    SettingFormComponent
+    SettingFormComponent,
+    FileUploadComponent
   ],
   imports: [
     BrowserModule,
