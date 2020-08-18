@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpEvent, HttpErrorResponse, HttpEventType } from  '@angular/common/http'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileService {
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
-  public upload(fileName: string, fileContent: string): void {
-    console.log(
-      'file upload defined'
-    )
+  private soltion_endpoint = '/api/solution_upload.php';
+
+  public upload(formData) {
+
+    return this.httpClient.post<any>(this.soltion_endpoint, formData, {  
+        reportProgress: true,  
+        observe: 'events'  
+      });  
   }
  
 }

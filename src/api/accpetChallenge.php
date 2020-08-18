@@ -32,7 +32,7 @@ if( $has_permission->to('accept challenges') ){
     (?, ?)
 SQL;
   $stmt = $pdo->prepare( $accpet_challenge_query );
-  $stmt->execute([$tokenData['acct'], (int)$input['chapter_id'] ]);
+  $stmt->execute([$tokenData['acct'], (int)$input['chapterId'] ]);
   $response['accepted'] = true;
 } else {
   header( 'message: permissioned denied to view content, please login.' );

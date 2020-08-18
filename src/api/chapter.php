@@ -36,7 +36,9 @@ if( $has_permission->to('view content') ){
   $response = [
     'chapter' => $result['chapter'],
     'title' => $result['title'],
-    'chapter_id' => $result['chapter_id']
+    'chapter_id' => $result['chapter_id'],
+    'accepted' => $result['accepted'],
+    'solved' => $result['solved']
   ];
 } else {
   header( 'message: permissioned denied to view content, please login.' );

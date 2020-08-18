@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChapterService } from '../chapter.service';
+import { FileUploadComponent } from '../file-upload/file-upload.component'
 
 @Component({
   selector: 'app-chapter',
@@ -9,12 +10,13 @@ import { ChapterService } from '../chapter.service';
 export class ChapterComponent implements OnInit {
 
   public chapter: any = { title:  '', content: ''};
-  public accpeted = false;
+  public accpeted = 0;
   public solved = false;
   public chapterId: number;
+  public showForm = false;
 
   constructor(
-    private chapterSrv: ChapterService
+    private chapterSrv: ChapterService,
   ) {
 
   }
@@ -31,15 +33,20 @@ export class ChapterComponent implements OnInit {
       },
       (error) => console.log(error)
     );
+
   }
 
   acceptChallenge(): void {
     this.chapterSrv.acceptChallenge(this.chapterId).subscribe(
       (res: any) => {
-        this.accpeted = res.body.accepted;
+        this.accpeted = res.accepted;
       },
       (error) => console.log(error)
     );
+  }
+
+  showUploadForm(): void {
+    this.showForm = true;
   }
 }
 

@@ -13,7 +13,13 @@
 
 <div class="row"   *ngIf="accpeted && !solved">
   <div class="col">
-    <button class="btn btn-success">Upload solutions</button>
+    <button class="btn btn-success" (click)="showUploadForm()">Upload solutions</button>
+  </div>
+</div>
+
+<div class="row"   *ngIf="showForm">
+  <div class="col">
+    <app-file-upload></app-file-upload>
   </div>
 </div>
 
