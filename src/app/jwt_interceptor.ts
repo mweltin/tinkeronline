@@ -16,7 +16,7 @@ export class JwtInterceptor implements HttpInterceptor {
     let isLoggedIn: boolean;
     this.registerSrv.isLoggedIn.subscribe( val => isLoggedIn = val );
     let customReqHeaders = request.headers;
-    console.log('request interceptor working');
+
     let token = this.tokenSrv.getToken();
     if ( isLoggedIn && token ){
         customReqHeaders = customReqHeaders.append( 'Authorzie', token );

@@ -8,9 +8,9 @@ export class FileService {
 
   constructor(private httpClient: HttpClient) { }
 
-  private soltion_endpoint = '/api/solution_upload.php';
+  private soltion_endpoint = 'api/solution_upload.php';
 
-  public upload(formData) {
+  public upload(fileName, formData) {
 
     return this.httpClient.post<any>(this.soltion_endpoint, formData, {  
         reportProgress: true,  

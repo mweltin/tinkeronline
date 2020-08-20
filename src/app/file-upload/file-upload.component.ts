@@ -37,7 +37,9 @@ export class FileUploadComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    this.fileSrv.upload(this.fileName, this.formGroup.get('file').value);
+    this.fileSrv.upload(this.fileName, this.formGroup.get('file').value).subscribe(
+      (data) => { console.log('file logged'); },
+      (error) => { console.log(error); }
+    );
   }
-
 }
