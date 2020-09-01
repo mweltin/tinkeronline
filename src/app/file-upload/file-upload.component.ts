@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { FileService } from '../file.service';
 
 @Component({
@@ -7,39 +8,41 @@ import { FileService } from '../file.service';
   templateUrl: './file-upload.component.html',
   styleUrls: ['./file-upload.component.css']
 })
-export class FileUploadComponent implements OnInit {
+export class FileUploadComponent {
 
-  private fileName;
-
-  constructor(private fb: FormBuilder, private fileSrv: FileService) { }
-  
-  public formGroup = this.fb.group({
-    file: [null, Validators.required]
+  myForm = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    file: new FormControl('', [Validators.required]),
+    fileSource: new FormControl('', [Validators.required])
   });
 
-  ngOnInit(): void {
+  constructor(private http: HttpClient) { }
+
+  get f() {
+    return this.myForm.controls;
   }
 
-  public onFileChange(event) {
-    const reader = new FileReader();
+  onFileChange(event) {
 
-    if (event.target.files && event.target.files.length) {
-      this.fileName = event.target.files[0].name;
-      const [file] = event.target.files;
-      reader.readAsDataURL(file);
-
-      reader.onload = () => {
-        this.formGroup.patchValue({
-          file: reader.result
-        });
-      };
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.myForm.patchValue({
+        fileSource: file
+      });
     }
   }
 
-  public onSubmit(): void {
-    this.fileSrv.upload(this.fileName, this.formGroup.get('file').value).subscribe(
-      (data) => { console.log('file logged'); },
-      (error) => { console.log(error); }
-    );
+  submit() {
+    const formData = new FormData();
+    formData.append('file', this.myForm.get('fileSource').value);
+
+    this.http.post('api/solution_upload.php', formData)
+      .subscribe(res => {
+        console.log(res);
+        alert('Uploaded Successfully.');
+      },
+      error => { console.log(error); }
+      );
   }
+
 }

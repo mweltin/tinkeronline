@@ -1,4 +1,5 @@
 <?php
+
 // composer auto loader
 require 'header.php';
 
@@ -23,71 +24,37 @@ try{
 $tokenData = $tm->parseToken($token);
 $has_permission = new hasPermission($pdo, $tokenData['acct']);
 
+
+
 if( $has_permission->to('upload assets') ){
     try {
     
-        // Undefined | Multiple Files | $_FILES Corruption Attack
-        // If this request falls under any of them, treat it invalid.
-        if (
-            !isset($_FILES['upfile']['error']) ||
-            is_array($_FILES['upfile']['error'])
-        ) {
-            throw new RuntimeException('Invalid parameters.');
-        }
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: PUT, GET, POST");
+        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+            
+        $folderPath = "/home/tinkerblake/solution_uploads/";
+       
+        $file_tmp = $_FILES['file']['tmp_name'];
+        error_log("got here ". $file_tmp);
 
-        // Check $_FILES['upfile']['error'] value.
-        switch ($_FILES['upfile']['error']) {
-            case UPLOAD_ERR_OK:
-                break;
-            case UPLOAD_ERR_NO_FILE:
-                throw new RuntimeException('No file sent.');
-            case UPLOAD_ERR_INI_SIZE:
-            case UPLOAD_ERR_FORM_SIZE:
-                throw new RuntimeException('Exceeded filesize limit.');
-            default:
-                throw new RuntimeException('Unknown errors.');
-        }
+        $file_ext = strtolower(end(explode('.',$_FILES['file']['name'])));
+        $file = $folderPath . uniqid() . '.'.$file_ext;
+        move_uploaded_file($file_tmp, $file);
+        $response['message'] = "all is good";
+    } catch (\Exception $e) {
 
-        // You should also check filesize here.
-        if ($_FILES['upfile']['size'] > 1000000) {
-            throw new RuntimeException('Exceeded filesize limit.');
-        }
-
-        // DO NOT TRUST $_FILES['upfile']['mime'] VALUE !!
-        // Check MIME Type by yourself.
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        if (false === $ext = array_search(
-            $finfo->file($_FILES['upfile']['tmp_name']),
-            array(
-                'jpg' => 'image/jpeg',
-                'png' => 'image/png',
-                'gif' => 'image/gif',
-            ),
-            true
-        )) {
-            throw new RuntimeException('Invalid file format.');
-        }
-
-        // You should name it uniquely.
-        // DO NOT USE $_FILES['upfile']['name'] WITHOUT ANY VALIDATION !!
-        // On this example, obtain safe unique name from its binary data.
-        if (!move_uploaded_file(
-            $_FILES['upfile']['tmp_name'],
-            sprintf('/solution_uploads/%s.%s',
-                sha1_file($_FILES['upfile']['tmp_name']),
-                $ext
-            )
-        )) {
-            throw new RuntimeException('Failed to move uploaded file.');
-        }
-
-        echo 'File is uploaded successfully.';
-
-    } catch (RuntimeException $e) {
-
-        echo $e->getMessage();
+        error_log( $e->getMessage() );
+        $response['message'] = "all is not good";
 
     }
 }
 
+// issue new JWT
+$jwt = $tm->issueTokenToUser($tokenData['acct']);
+header('Authorzie: ' . $jwt);
+header('Content-type: application/json');
+print (  json_encode($response) );
+
+exit();
 ?>
