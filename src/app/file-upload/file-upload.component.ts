@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { FileService } from '../file.service';
 
 @Component({
   selector: 'app-file-upload',
@@ -9,6 +8,9 @@ import { FileService } from '../file.service';
   styleUrls: ['./file-upload.component.css']
 })
 export class FileUploadComponent {
+
+  // This property is bound using its original name.
+  @Input('chapterId') chapterId: string;
 
   myForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -35,7 +37,7 @@ export class FileUploadComponent {
   submit() {
     const formData = new FormData();
     formData.append('file', this.myForm.get('fileSource').value);
-
+    formData.append('chapterId', this.chapterId);
     this.http.post('api/solution_upload.php', formData)
       .subscribe(res => {
         console.log(res);

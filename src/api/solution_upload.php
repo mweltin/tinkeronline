@@ -5,9 +5,6 @@ require 'header.php';
 
 //grab http headers
 $headers = apache_request_headers();
-
-// grab the user input from the registration.
-$input = json_decode($HTTP_RAW_POST_DATA, true);
 $token = $headers['Authorzie'];
 
 // this action requires a valid token
@@ -35,17 +32,66 @@ if( $has_permission->to('upload assets') ){
             
         $folderPath = "/home/tinkerblake/solution_uploads/";
        
+        $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime-type extension
+        $mime_type =finfo_file($finfo, $_FILES['file']['tmp_name']);
+        finfo_close($finfo);
+
+        // restrict solution upoad mime types
+        $valid_file_mime_types = ['image/jpeg', 'image/png', 'image/gif' ];
+        if( ! in_array($mime_type, $valid_file_mime_types)){
+          throw new \Exception('Bad mine type for uploaded solution');
+        }
+
+        // restrict solution upload file size
+        if ($_FILES['file']['size'] > 5000000) {
+          throw new Exception('Exceeded file size limit of 5MB.');
+        }
+
         $file_tmp = $_FILES['file']['tmp_name'];
         error_log("got here ". $file_tmp);
 
         $file_ext = strtolower(end(explode('.',$_FILES['file']['name'])));
         $file = $folderPath . uniqid() . '.'.$file_ext;
         move_uploaded_file($file_tmp, $file);
-        $response['message'] = "all is good";
+
+        $chapterId = (int) $_POST['chapterId'];
+
+        $challenge_id_query = <<<'SQL'
+        SELECT challenge_id 
+        FROM challenge
+        WHERE chapter_id = ?
+          AND account_id = ? 
+SQL;
+        $stmt = $pdo->prepare($challenge_id_query);
+        $stmt->execute([ $chapterId, $tokenData['acct'] ]);
+        $challenge_id = $stmt->fetchAll();
+
+        $add_solution_query = <<<'SQL'
+        INSERT INTO solution 
+        ( challenge_id, 
+        asset_path, 
+        asset_type, 
+        asset_name, 
+        asset_temp_name, 
+        approved)
+        VALUES ( ?, ?, ?, ?, ?, ?)
+SQL;
+        $stmt = $pdo->prepare($add_solution_query);
+        $stmt->execute(
+          [ 
+            $challenge_id[0]['challenge_id'], 
+            $folderPath,
+            $mime_type,
+            $_FILES['file']['name'],
+            $file_tmp,  
+            0 ]
+          );
+
+        $response['message'] = $_FILES['file']['name']." uploaded";
     } catch (\Exception $e) {
 
         error_log( $e->getMessage() );
-        $response['message'] = "all is not good";
+        $response['message'] = $e->getMessage();
 
     }
 }

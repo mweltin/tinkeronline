@@ -16,10 +16,9 @@
     <button class="btn btn-success" (click)="showUploadForm()">Upload solutions</button>
   </div>
 </div>
-
 <div class="row"   *ngIf="showForm">
   <div class="col">
-    <app-file-upload></app-file-upload>
+    <app-file-upload  chapterId={{chapterId}}></app-file-upload>
   </div>
 </div>
 
