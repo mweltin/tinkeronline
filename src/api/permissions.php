@@ -58,6 +58,25 @@ left join account_action aa on aa.action_id  = a.action_id and aa.account_id = ?
 where parent_only = 0
 SQL;
 
+      $assets_to_approve_query =<<<'SQL'
+SELECT 
+            solution.solution_id,
+            solution.challenge_id,
+            solution.asset_name,
+            solution.asset_temp_name,
+            solution.asset_type,
+            solution.approved 
+FROM solution
+JOIN challenge ON solution.challenge_id = challenge.challenge_id
+JOIN account child ON child.account_id = challenge.account_id
+JOIN registrar ON registrar.registrar_id = child.registrar_id
+JOIN account parent ON parent.account_id = registrar.account_id
+WHERE 
+  registrar.account_id = ?
+AND 
+  approved = 0
+SQL;
+
       $stmt = $pdo->prepare( $account_settings_query  );
       $stmt->execute([ $tokenData['acct'] ]);
       $account_settings = $stmt->fetchAll();
@@ -72,15 +91,21 @@ SQL;
         $child_premission_settings = $stmt->fetchAll();
         $child_account_settings[$key]['permissions'] = $child_premission_settings;
       } 
+
+      $stmt = $pdo->prepare( $assets_to_approve_query );
+      $stmt->execute([ $tokenData['acct'] ]);
+      $assets_to_approve = $stmt->fetchAll();
       
       $response["user_settings"]["username"]= $account_settings[0]['username'];
       $response["user_settings"]["email"]= $account_settings[0]['email'];
       $response["user_settings"]["billing_info"]= $account_settings[0]['billing_info'];
       $response["child_settings"] = $child_account_settings;
+      $response["assets_to_approve"] = $assets_to_approve;
     break;
 
     case 'POST':
-      $input = json_decode($HTTP_RAW_POST_DATA, true);
+      // $input = json_decode($HTTP_RAW_POST_DATA, true);
+      $input = json_decode(file_get_contents('php://input'), true);
       $update_account =<<<'SQL'
         update account 
           set username = ?,

@@ -4,6 +4,7 @@ import { HttpResponse } from '@angular/common/http';
 import { SettingsService } from '../settings.service';
 import { TokenService } from '../token.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Setting } from '../setting';
 
 @Component({
   selector: 'app-setting-form',
@@ -37,11 +38,11 @@ export class SettingFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.settingsSrv.getSettings().subscribe(
-      (response: HttpResponse<any> ) => {
-        this.settingForm.controls.username.setValue(response.body.user_settings.username);
-        this.settingForm.controls.email.setValue(response.body.user_settings.email);
-        this.settingForm.controls.billing_info.setValue(response.body.user_settings.billing_info);
-        for (const field of response.body.child_settings ){
+      (response: Setting ) => {
+        this.settingForm.controls.username.setValue(response.user_settings.username);
+        this.settingForm.controls.email.setValue(response.user_settings.email);
+        this.settingForm.controls.billing_info.setValue(response.user_settings.billing_info);
+        for (const field of response.child_settings ){
             const childGrp = new FormGroup({});
             const childNameCtrl = new FormControl();
             childNameCtrl.setValue(field.username);
@@ -55,13 +56,14 @@ export class SettingFormComponent implements OnInit {
             const childPermGrp = new FormGroup({});
             for (const perm of field.permissions){
               const childPerm = new FormControl();
-              childPerm.setValue(Boolean(perm.has_permission == 'true'));
+              childPerm.setValue(Boolean(perm.has_permission == true));
               childPermGrp.addControl(perm.name, childPerm);
             }
             childGrp.addControl('perms', childPermGrp);
             this.children.push(childGrp);
+
           }
-        this.permissions = response.body.child_settings[0].permissions.map( x => x.name);
+        this.permissions = response.child_settings[0].permissions.map( x => x.name);
       },
 (error) => {
            this.errorMsg = error.headers.get('message');
