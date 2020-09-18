@@ -42,9 +42,20 @@
             <input type="checkbox" formControlName="{{perm}}">
           </div>
         </div>
-        
-        <div><input type="submit"></div>
       </div>
     </div>
   </div>
+
+<div>Assets To Approve:</div>
+  <div formArrayName="asset_approval">
+    <div *ngFor="let asset of asset_approval.controls; let i=index">
+      <div [formGroupName]="i">
+        <label>{{assetMetaData[i].asset_name}}"</label>
+        <label>{{assetMetaData[i].asset_temp_name}}</label>
+        <input type="checkbox" formControlName="{{asset}}">
+      </div>
+    </div>
+  </div>
+  
+  <div><input type="submit"></div>
 </form>

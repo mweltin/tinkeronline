@@ -27,13 +27,19 @@ export class SettingFormComponent implements OnInit {
     email: [''],
     billing_info: [''],
     children: this.fb.array([
-    ])
+    ]),
+    asset_approval: this.fb.array([])
   });
 
   permissions = [];
+  assetMetaData = [];
 
   get children(){
     return this.settingForm.get('children') as FormArray;
+  }
+
+  get asset_approval(){
+    return this.settingForm.get('asset_approval') as FormArray;
   }
 
   ngOnInit(): void {
@@ -61,8 +67,22 @@ export class SettingFormComponent implements OnInit {
             }
             childGrp.addControl('perms', childPermGrp);
             this.children.push(childGrp);
-
           }
+
+        for ( const asset of response.assets_to_approve){
+          const assetGrp = new FormGroup({});
+          const assetCtrl = new FormControl();
+          assetCtrl.setValue(asset);
+          assetGrp.addControl(asset.asset_name, assetCtrl);
+
+          this.asset_approval.push(assetGrp);
+          this.assetMetaData.push(asset);
+        }
+
+
+
+
+
         this.permissions = response.child_settings[0].permissions.map( x => x.name);
       },
 (error) => {
