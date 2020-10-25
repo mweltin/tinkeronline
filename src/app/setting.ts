@@ -12,7 +12,7 @@ export interface Setting {
             permissions: [
                 {
                     name: string,
-                    has_permission: boolean
+                    has_permission: string
                 }
             ]
         }

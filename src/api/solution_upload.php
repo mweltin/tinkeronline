@@ -48,7 +48,6 @@ if( $has_permission->to('upload assets') ){
         }
 
         $file_tmp = $_FILES['file']['tmp_name'];
-        error_log("got here ". $file_tmp);
 
         $file_ext = strtolower(end(explode('.',$_FILES['file']['name'])));
         $file = $folderPath . uniqid() . '.'.$file_ext;
@@ -83,7 +82,7 @@ SQL;
             $folderPath,
             $mime_type,
             $_FILES['file']['name'],
-            $file_tmp,  
+            $file,  
             0 ]
           );
 

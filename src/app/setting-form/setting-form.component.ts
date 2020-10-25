@@ -18,7 +18,6 @@ export class SettingFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private settingsSrv: SettingsService,
-    private tokenSrv: TokenService,
     private modalService: NgbModal
   ) {}
 
@@ -62,7 +61,8 @@ export class SettingFormComponent implements OnInit {
             const childPermGrp = new FormGroup({});
             for (const perm of field.permissions){
               const childPerm = new FormControl();
-              childPerm.setValue(Boolean(perm.has_permission == true));
+              const truth = perm.has_permission === "true";
+              childPerm.setValue(truth);
               childPermGrp.addControl(perm.name, childPerm);
             }
             childGrp.addControl('perms', childPermGrp);
@@ -72,16 +72,12 @@ export class SettingFormComponent implements OnInit {
         for ( const asset of response.assets_to_approve){
           const assetGrp = new FormGroup({});
           const assetCtrl = new FormControl();
-          assetCtrl.setValue(asset);
+          assetCtrl.setValue(false);
           assetGrp.addControl(asset.asset_name, assetCtrl);
 
           this.asset_approval.push(assetGrp);
           this.assetMetaData.push(asset);
         }
-
-
-
-
 
         this.permissions = response.child_settings[0].permissions.map( x => x.name);
       },

@@ -39,7 +39,7 @@
         <div [formGroup]="kids.controls.perms">
           <div *ngFor="let perm of permissions;">
             <label>{{perm}} </label>
-            <input type="checkbox" formControlName="{{perm}}">
+            <input type="checkbox" formControlName="{{perm}}" >
           </div>
         </div>
       </div>
@@ -48,11 +48,14 @@
 
 <div>Assets To Approve:</div>
   <div formArrayName="asset_approval">
-    <div *ngFor="let asset of asset_approval.controls; let i=index">
-      <div [formGroupName]="i">
-        <label>{{assetMetaData[i].asset_name}}"</label>
-        <label>{{assetMetaData[i].asset_temp_name}}</label>
-        <input type="checkbox" formControlName="{{asset}}">
+    <div *ngFor="let asset of asset_approval.controls; let j=index">
+      <div [formGroupName]="j">
+        <div class="form-group">
+          <label>{{assetMetaData[j].asset_name}}"</label>
+          <img src="api/asset.php?id={{assetMetaData[j].solution_id}}" height="50" width="50"/>
+          <br>
+          <input type="checkbox" formControlName="{{asset.asset_name}}">
+        </div>
       </div>
     </div>
   </div>
