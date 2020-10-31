@@ -105,7 +105,6 @@ SQL;
 
     case 'POST':
       $input = json_decode(file_get_contents('php://input'), true);
-      error_log(print_r($input, true));
       $update_account =<<<'SQL'
         update account 
           set username = ?,
@@ -133,7 +132,6 @@ SQL;
       $stmt->execute([ $input['billing_info'], $tokenData['acct'] ]);
 
       foreach( $input['children'] as $key => $val ){
-        error_log("**".$key. print_r($val, true));
         $stmt = $pdo->prepare( $update_account );
         $stmt->execute([ $val['name'], $val['email'], $val['id'] ]);
 
@@ -145,6 +143,14 @@ SQL;
             $stmt = $pdo->prepare( $add_permissions );
             $stmt->execute([ $val['id'], $name  ]);
           }
+        }
+      }
+      foreach( $input['asset_approval'] as $key => $val ){
+        $imageName = array_keys($val)[0];
+        $isSolutionApproved = (int)$val[$imageName] === 1 ?  true : false;
+        if( $isSolutionApproved ){
+          $solution = new solution($pdo);
+          $solution->approveSolutionByName($imageName);
         }
       }
       $response = $input;
