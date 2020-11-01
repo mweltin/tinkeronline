@@ -12,8 +12,9 @@ class chapterManager {
 
     function get_default_chapter(){
       $get_default_chapter_query = <<<'SQL'
-      SELECT chapter, title, solved, 
-      case when challenge_id is not null then true else false end as accepted, chapter.chapter_id as accepted, 
+      SELECT chapter, title,
+      case when solved is not null then true else false end as solved,
+      case when challenge_id is not null then true else false end as accepted,
       chapter.chapter_id
       FROM chapter
       LEFT JOIN challenge on challenge.chapter_id = chapter.chapter_id

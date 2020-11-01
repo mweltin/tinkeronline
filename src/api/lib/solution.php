@@ -1,5 +1,7 @@
 <?php
 
+require('../constanats');
+
 class solution {
 
     private $getSolutionByNameQuery =<<<'SQL'
@@ -18,6 +20,8 @@ SQL;
     {
         $this->pdo = $dbconn;
         $this->soultionDetail = null;
+        $this->sourceDir = constant("UPLOAD_ASSETS_DIR");
+        $this->destinationDir = constant("APPROVED_ASSET_DIR");
     }
 
     private function getSolutionByName($name) {
@@ -28,7 +32,7 @@ SQL;
 
     private function moveSolutionUnderDocRoot() {
         
-
+        rename($this->soultionDetail['asset_temp_name'] , $this->destinationDir."/".)
     }
 
     public function approveSolutionByName($name = false) {

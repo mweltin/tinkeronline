@@ -10,7 +10,7 @@ import { FileUploadComponent } from '../file-upload/file-upload.component'
 export class ChapterComponent implements OnInit {
 
   public chapter: any = { title:  '', content: ''};
-  public accpeted = 0;
+  public accpeted = false;
   public solved = false;
   public chapterId: number;
   public showForm = false;
@@ -27,8 +27,8 @@ export class ChapterComponent implements OnInit {
       (res: any) => {
         this.chapter.content = res.chapter;
         this.chapter.title = res.title;
-        this.solved = res.solved;
-        this.accpeted = res.accepted;
+        this.solved = res.solved === '1' ? true : false;
+        this.accpeted = res.accepted === '1' ? true : false;
         this.chapterId = res.chapter_id;
       },
       (error) => console.log(error)

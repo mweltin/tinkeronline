@@ -2,6 +2,7 @@
 
 // composer auto loader
 require 'header.php';
+require 'constants.php';
 
 //grab http headers
 $headers = apache_request_headers();
@@ -30,7 +31,7 @@ if( $has_permission->to('upload assets') ){
         header("Access-Control-Allow-Methods: PUT, GET, POST");
         header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
             
-        $folderPath = "/home/tinkerblake/solution_uploads/";
+        $folderPath = constant("UPLOAD_ASSET_DIR");
        
         $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime-type extension
         $mime_type =finfo_file($finfo, $_FILES['file']['tmp_name']);
@@ -48,10 +49,9 @@ if( $has_permission->to('upload assets') ){
         }
 
         $file_tmp = $_FILES['file']['tmp_name'];
-
         $file_ext = strtolower(end(explode('.',$_FILES['file']['name'])));
-        $file = $folderPath . uniqid() . '.'.$file_ext;
-        move_uploaded_file($file_tmp, $file);
+        $file = uniqid() . '.'.$file_ext;
+        move_uploaded_file($file_tmp, $folderPath.$file);
 
         $chapterId = (int) $_POST['chapterId'];
 
@@ -63,7 +63,11 @@ if( $has_permission->to('upload assets') ){
 SQL;
         $stmt = $pdo->prepare($challenge_id_query);
         $stmt->execute([ $chapterId, $tokenData['acct'] ]);
-        $challenge_id = $stmt->fetchAll();
+        $challenge_id = $stmt->fetch();
+
+        error_log("challenge id " . print_r($challenge_id, true));
+        error_log("chapter id " . $chapterId);
+        error_log("account id " . $tokenData['acct']);
 
         $add_solution_query = <<<'SQL'
         INSERT INTO solution 
@@ -78,7 +82,7 @@ SQL;
         $stmt = $pdo->prepare($add_solution_query);
         $stmt->execute(
           [ 
-            $challenge_id[0]['challenge_id'], 
+            $challenge_id['challenge_id'], 
             $folderPath,
             $mime_type,
             $_FILES['file']['name'],

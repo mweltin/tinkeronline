@@ -47,7 +47,7 @@
   </div>
 
 <div>Assets To Approve:</div>
-  <div formArrayName="asset_approval">
+  <div *ngIf=" assetMetaData.length > 0 " formArrayName="asset_approval">
     <div *ngFor="let asset of asset_approval.controls; let j=index">
       <div [formGroupName]="j">
         <div class="form-group">
@@ -58,6 +58,9 @@
         </div>
       </div>
     </div>
+  </div>
+  <div *ngIf="assetMetaData.length <= 0">
+    No assets need approval 
   </div>
   
   <div><input type="submit"></div>
