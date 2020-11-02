@@ -1,6 +1,6 @@
 <?php
 
-require('../constanats');
+require 'constants.php';
 
 class solution {
 
@@ -16,11 +16,17 @@ SQL;
         WHERE solution_id = ? 
 SQL;
 
+    private $markChallengeSolvedQuery =<<<'SQL'
+        UPDATE challenge
+        SET solved = 1
+        WHERE challenge_id = ? 
+SQL;
+
     function __construct($dbconn)
     {
         $this->pdo = $dbconn;
         $this->soultionDetail = null;
-        $this->sourceDir = constant("UPLOAD_ASSETS_DIR");
+        $this->sourceDir = constant("UPLOAD_ASSET_DIR");
         $this->destinationDir = constant("APPROVED_ASSET_DIR");
     }
 
@@ -31,8 +37,19 @@ SQL;
     }
 
     private function moveSolutionUnderDocRoot() {
-        
-        rename($this->soultionDetail['asset_temp_name'] , $this->destinationDir."/".)
+        rename($this->sourceDir . $this->soultionDetail['asset_temp_name'] , $this->destinationDir . $this->soultionDetail['asset_temp_name']);
+    }
+
+    private function approveSolution() {
+        $stmt = $this->pdo->prepare($this->approveSolutionQuery);
+        $stmt->execute([ $this->soultionDetail['solution_id'] ]);
+        $this->soultionDetail['approved'] = true;
+    }
+
+    private function markChallengeSolved() {
+        $stmt = $this->pdo->prepare($this->markChallengeSolvedQuery);
+        $stmt->execute([ $this->soultionDetail['challenge_id'] ]);
+        $this->soultionDetail['solved'] = true;
     }
 
     public function approveSolutionByName($name = false) {
@@ -40,9 +57,10 @@ SQL;
 
         $this->getSolutionByName($name);
         $stmt = $this->pdo->prepare($this->approveSolutionQuery);
-        error_log("got here to approve: ". $name. "  ".$this->soultionDetail['solution_id']);
-
         $stmt->execute([$this->soultionDetail['solution_id']]);
+        $this->moveSolutionUnderDocRoot();
+        $this->approveSolution();
+        $this->markChallengeSolved();
 
     }
 }

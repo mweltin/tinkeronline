@@ -10,6 +10,7 @@ require('setting.php');
 // establish a mysql connectoion 
 $path = "/home/tinkerblake/www/tinkeronline/api";
 set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+set_include_path(get_include_path() . PATH_SEPARATOR . $path."/lib");
 require('mysql_connect.php');
 
 // define tinkercamp auto loader

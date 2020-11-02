@@ -1,5 +1,6 @@
 <?php
     require 'header.php';
+    require 'constants.php';
 
     $asset_query =<<<'SQL'
     SELECT * 
@@ -12,5 +13,5 @@ SQL;
     $asset = $stmt->fetch();
 
     header('Content-Type: '. $asset['asset_type']);
-    readfile( $asset['asset_temp_name'] );
+    readfile( constant("UPLOAD_ASSET_DIR") . $asset['asset_temp_name'] );
 ?>

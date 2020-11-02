@@ -51,7 +51,7 @@
     <div *ngFor="let asset of asset_approval.controls; let j=index">
       <div [formGroupName]="j">
         <div class="form-group">
-          <label>{{assetMetaData[j].asset_name}}"</label>
+          <label>{{assetMetaData[j].asset_name}} </label>
           <img src="api/asset.php?id={{assetMetaData[j].solution_id}}" height="50" width="50"/>
           <br>
           <input type="checkbox" formControlName="{{assetMetaData[j].asset_name}}">

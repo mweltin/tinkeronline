@@ -65,10 +65,6 @@ SQL;
         $stmt->execute([ $chapterId, $tokenData['acct'] ]);
         $challenge_id = $stmt->fetch();
 
-        error_log("challenge id " . print_r($challenge_id, true));
-        error_log("chapter id " . $chapterId);
-        error_log("account id " . $tokenData['acct']);
-
         $add_solution_query = <<<'SQL'
         INSERT INTO solution 
         ( challenge_id, 
